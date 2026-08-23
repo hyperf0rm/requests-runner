@@ -13,18 +13,20 @@ public class Result {
     private String response;
     private String error;
 
+    public Result() {}
+
     public Result(int id,
-                  String targetValue,
-                  float duration,
+                  long duration,
                   String URL,
+                  String payload,
                   Map<String, String> headers,
                   int statusCode,
                   String response,
                   String error) {
         this.id = id;
-        this.targetValue = targetValue;
         this.duration = duration;
         this.URL = URL;
+        this.payload = payload;
         this.headers = headers;
         this.statusCode = statusCode;
         this.response = response;
@@ -39,19 +41,11 @@ public class Result {
         this.id = id;
     }
 
-    public String getTargetValue() {
-        return targetValue;
-    }
-
-    public void setTargetValue(String targetValue) {
-        this.targetValue = targetValue;
-    }
-
     public float getDuration() {
         return duration;
     }
 
-    public void setDuration(float duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

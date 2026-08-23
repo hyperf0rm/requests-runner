@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,15 +26,34 @@ public class RunnerService {
     }
 
     public void run() {
+        int id = 1;
+        long start = System.nanoTime();
+
         for (Request request : requests) {
-            HttpRequest finalRequest = buildFinalRequest(request);
-            client.sendAsync(finalRequest, HttpResponse.BodyHandlers.ofString())
-                    .thenApply(HttpResponse::body)
-                    .thenAccept(System.out::println)
-                    .join();
+            Result result = new Result();
+            try {
+                HttpRequest finalRequest = buildFinalRequest(request);
+                HttpResponse<String> response = client
+                        .sendAsync(finalRequest, HttpResponse.BodyHandlers.ofString())
+                        .join();
+                result.setStatusCode(response.statusCode());
+                result.setResponse(response.body());
+            } catch (Exception e){
+                result.setError(e.getMessage());
+            } finally {
+                long duration = Duration.ofNanos(System.nanoTime() - start).toMillis();
+                result.setDuration(duration);
+                result.setId(id);
+                result.setURL(request.getUrl());
+                result.setHeaders(request.getHeaders());
+                result.setPayload(request.getBody());
+                id++;
+            }
+
+            results.add(result);
+
         }
     }
-
 
     private HttpRequest buildFinalRequest(Request request) {
 
