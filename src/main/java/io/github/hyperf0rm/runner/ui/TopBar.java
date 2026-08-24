@@ -2,6 +2,7 @@ package io.github.hyperf0rm.runner.ui;
 
 import io.github.hyperf0rm.runner.model.HttpMethod;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -12,12 +13,14 @@ public class TopBar extends HBox {
 
     private final ChoiceBox<HttpMethod> methodChoiceBox;
     private final TextField urlTextField;
+    private final Button sendButton;
 
     public TopBar(double spacing) {
         super(spacing);
         this.methodChoiceBox = createMethodChoiceBox();
         this.urlTextField = createUrlTextField();
-        this.getChildren().addAll(methodChoiceBox, urlTextField);
+        this.sendButton = createSendButton();
+        this.getChildren().addAll(methodChoiceBox, urlTextField, sendButton);
         this.setPadding(new Insets(10, 10, 10, 10));
         HBox.setHgrow(this.urlTextField, Priority.ALWAYS);
     }
@@ -38,5 +41,9 @@ public class TopBar extends HBox {
         tf.setMaxWidth(Double.MAX_VALUE);
         tf.setPromptText("URL");
         return tf;
+    }
+
+    private Button createSendButton() {
+        return new Button("Send");
     }
 }
