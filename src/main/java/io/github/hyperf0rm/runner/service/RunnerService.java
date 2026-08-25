@@ -32,6 +32,7 @@ public class RunnerService {
         for (Request request : requests) {
             Result result = new Result();
             try {
+                System.out.println("Request: " + request.getMethod() + " " + request.getUrl());
                 HttpRequest finalRequest = buildFinalRequest(request);
                 HttpResponse<String> response = client
                         .sendAsync(finalRequest, HttpResponse.BodyHandlers.ofString())
@@ -39,6 +40,7 @@ public class RunnerService {
                 result.setStatusCode(response.statusCode());
                 result.setResponse(response.body());
             } catch (Exception e){
+                System.out.printf("Error: %s\n", e.getMessage());
                 result.setError(e.getMessage());
             } finally {
                 long duration = Duration.ofNanos(System.nanoTime() - start).toMillis();
@@ -48,6 +50,7 @@ public class RunnerService {
                 result.setHeaders(request.getHeaders());
                 result.setPayload(request.getBody());
                 id++;
+                System.out.printf("Finished Request: %s\n", request.getMethod() + " " + request.getUrl());
             }
 
             results.add(result);

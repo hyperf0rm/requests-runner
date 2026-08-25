@@ -19,7 +19,7 @@ public class TopBar extends HBox {
         super(spacing);
         this.methodChoiceBox = createMethodChoiceBox();
         this.urlTextField = createUrlTextField();
-        this.sendButton = createSendButton();
+        this.sendButton = new Button("Send");
         this.getChildren().addAll(methodChoiceBox, urlTextField, sendButton);
         this.setPadding(new Insets(10, 10, 10, 10));
         HBox.setHgrow(this.urlTextField, Priority.ALWAYS);
@@ -43,7 +43,15 @@ public class TopBar extends HBox {
         return tf;
     }
 
-    private Button createSendButton() {
-        return new Button("Send");
+    public String getURL() {
+        return urlTextField.getText();
+    }
+
+    public HttpMethod getMethod() {
+        return methodChoiceBox.getValue();
+    }
+
+    public Button getSendButton() {
+        return sendButton;
     }
 }
