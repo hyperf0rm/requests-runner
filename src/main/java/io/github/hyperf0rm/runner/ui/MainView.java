@@ -4,6 +4,7 @@ import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.service.RunnerService;
 import javafx.geometry.Insets;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 
 import java.util.ArrayList;
@@ -28,8 +29,7 @@ public class MainView extends BorderPane {
         String url = topBar.getURL();
         HttpMethod method =  topBar.getMethod();
         String body = tabs.getBody();
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
+        Map<String, String> headers = tabs.getHeaders();
         Request request = new Request(method, url, headers, body);
         List<Request> requests = new ArrayList<>();
         requests.add(request);
