@@ -4,6 +4,8 @@ import io.github.hyperf0rm.runner.model.Request;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TemplateEngine {
 
@@ -12,6 +14,14 @@ public class TemplateEngine {
     public List<Request> fillWithValues (Request request, List<String> values) {
         List<Request> requests = new ArrayList<>();
         String templateBody = request.getBody();
+
+        Pattern pattern = Pattern.compile("\\{\\{\\w+}}");
+        Matcher matcher = pattern.matcher(templateBody);
+
+        if (!matcher.find()) {
+            requests.add(request);
+            return requests;
+        }
 
         for (String value : values) {
             String filledBody = templateBody.replaceAll("\\{\\{\\w+}}", value);
