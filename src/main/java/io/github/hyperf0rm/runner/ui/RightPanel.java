@@ -65,9 +65,9 @@ public class RightPanel extends VBox {
     private TabPane createResultTabs(Result result) {
         TabPane tabPane = new TabPane();
         Tab headersTab = createHeadersTab(result.getHeaders());
-        Tab payloadTab = createPayloadTab(result.getPayload());
-        Tab responseTab = createResponseTab(result.getResponse());
-        Tab errorTab = createErrorTab(result.getError());
+        Tab payloadTab = createTextTab("Payload", result.getPayload());
+        Tab responseTab = createTextTab("Response", result.getResponse());
+        Tab errorTab = createTextTab("Error", result.getError());
         tabPane.getTabs().addAll(headersTab, payloadTab, responseTab, errorTab);
         return tabPane;
     }
@@ -98,26 +98,10 @@ public class RightPanel extends VBox {
         return headersTab;
     }
 
-    private Tab createPayloadTab(String payload) {
-        TextArea textArea = new TextArea(payload);
+    private Tab createTextTab(String label, String content) {
+        TextArea textArea = new TextArea(content);
         textArea.setEditable(false);
-        Tab bodyTab = new Tab("Payload", textArea);
-        bodyTab.setClosable(false);
-        return bodyTab;
-    }
-
-    private Tab createResponseTab(String response) {
-        TextArea textArea = new TextArea(response);
-        textArea.setEditable(false);
-        Tab bodyTab = new Tab("Response", textArea);
-        bodyTab.setClosable(false);
-        return bodyTab;
-    }
-
-    private Tab createErrorTab(String error) {
-        TextArea textArea = new TextArea(error);
-        textArea.setEditable(false);
-        Tab bodyTab = new Tab("Error", textArea);
+        Tab bodyTab = new Tab(label, textArea);
         bodyTab.setClosable(false);
         return bodyTab;
     }
