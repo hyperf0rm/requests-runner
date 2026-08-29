@@ -7,15 +7,9 @@ import java.util.List;
 
 public class TemplateEngine {
 
-    private final Request request;
-    private final List<String> values;
+    public TemplateEngine() {}
 
-    public TemplateEngine(Request request, List<String> values) {
-        this.request = request;
-        this.values = values;
-    }
-
-    public List<Request> fillWithValues () {
+    public List<Request> fillWithValues (Request request, List<String> values) {
         List<Request> requests = new ArrayList<>();
         String templateBody = request.getBody();
 

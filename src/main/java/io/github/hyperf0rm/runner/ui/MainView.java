@@ -4,6 +4,7 @@ import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.service.RunnerService;
 import io.github.hyperf0rm.runner.util.CurlParser;
+import io.github.hyperf0rm.runner.util.TemplateEngine;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,6 +25,8 @@ public class MainView extends BorderPane {
     private TopBar topBar = new TopBar();
     private Tabs tabs = new Tabs();
     private CurlParser curlParser = new CurlParser();
+    private RightPanel rightPanel = new RightPanel();
+    private TemplateEngine templateEngine = new TemplateEngine();
 
     public MainView() {
         this.topBar.getSendButton().setOnAction(event -> sendDummyRequest());
@@ -33,7 +36,8 @@ public class MainView extends BorderPane {
         });
         setTop(topBar);
         setCenter(tabs);
-        setMargin(tabs, new Insets(10, 400, 10, 10));
+        setRight(rightPanel);
+        setMargin(tabs, new Insets(10));
     }
 
     public void sendDummyRequest() {
@@ -41,9 +45,10 @@ public class MainView extends BorderPane {
         HttpMethod method =  topBar.getMethod();
         String body = tabs.getBody();
         Map<String, String> headers = tabs.getHeaders();
-        Request request = new Request(method, url, headers, body);
+        List<String> values = rightPanel.getValues();
         List<Request> requests = new ArrayList<>();
-        requests.add(request);
+        Request request = new Request(method, url, headers, body);
+        requests = templateEngine.fillWithValues(request, values);
         RunnerService rs = new RunnerService(requests);
         rs.run();
     }
