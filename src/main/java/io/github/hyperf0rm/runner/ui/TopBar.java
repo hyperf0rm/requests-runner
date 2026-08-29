@@ -14,13 +14,15 @@ public class TopBar extends HBox {
     private final ChoiceBox<HttpMethod> methodChoiceBox;
     private final TextField urlTextField;
     private final Button sendButton;
+    private final Button importCURLButton;
 
     public TopBar(double spacing) {
         super(spacing);
         this.methodChoiceBox = createMethodChoiceBox();
         this.urlTextField = createUrlTextField();
         this.sendButton = new Button("Send");
-        this.getChildren().addAll(methodChoiceBox, urlTextField, sendButton);
+        this.importCURLButton = new Button("Import cURL");
+        this.getChildren().addAll(importCURLButton, methodChoiceBox, urlTextField, sendButton);
         this.setPadding(new Insets(10, 10, 10, 10));
         HBox.setHgrow(this.urlTextField, Priority.ALWAYS);
     }
@@ -53,5 +55,15 @@ public class TopBar extends HBox {
 
     public Button getSendButton() {
         return sendButton;
+    }
+
+    public Button getImportCURLButton() { return  importCURLButton; }
+
+    public void setURL(String url) {
+        urlTextField.setText(url);
+    }
+
+    public void setMethod(HttpMethod method) {
+        methodChoiceBox.setValue(method);
     }
 }

@@ -10,22 +10,18 @@ import java.util.regex.Pattern;
 
 public class CurlParser {
 
-    private String curl;
+    public CurlParser() {}
 
-    public CurlParser(String curl) {
-        this.curl = curl;
-    }
-
-    public Request parse() {
+    public Request parse(String curl) {
 
         // method
         Pattern p = Pattern.compile("--request\\s+([A-Za-z]+)|-X\\s+([A-Za-z]+)");
-        Matcher methodMatcher = p.matcher(this.curl);
+        Matcher methodMatcher = p.matcher(curl);
         String method;
         if (methodMatcher.find()) {
             method = methodMatcher.group(1);
         } else {
-            if (this.curl.contains("-data") || this.curl.contains("-d ")) {
+            if (curl.contains("-data") || curl.contains("-d ")) {
                 method = "POST";
             } else {
                 method = "GET";
@@ -35,7 +31,7 @@ public class CurlParser {
 
         // url
         p = Pattern.compile("--location\\s+'(.+)'|--url\\+'(.+)'");
-        Matcher urlMatcher = p.matcher(this.curl);
+        Matcher urlMatcher = p.matcher(curl);
         String URL = "";
         if (urlMatcher.find()) {
             URL = urlMatcher.group(1);
@@ -45,7 +41,7 @@ public class CurlParser {
 
         // headers
         p = Pattern.compile("--header\\s+'(.+)'|-H\\s+'(.+)'");
-        Matcher headersMatcher = p.matcher(this.curl);
+        Matcher headersMatcher = p.matcher(curl);
         Map<String, String> headers = new HashMap<>();
         while (headersMatcher.find()) {
             String header = headersMatcher.group(1);
@@ -55,7 +51,7 @@ public class CurlParser {
 
         // body
         p = Pattern.compile("--data\\s+'(.+)'|-d\\s+'(.+)'", Pattern.DOTALL);
-        Matcher bodyMatcher = p.matcher(this.curl);
+        Matcher bodyMatcher = p.matcher(curl);
         String body = "";
 
         if (bodyMatcher.find()) {
@@ -65,11 +61,5 @@ public class CurlParser {
         return new Request(httpMethod, URL, headers, body);
     }
 
-    public String getCurl() {
-        return curl;
-    }
-    public void setCurl(String curl) {
-        this.curl = curl;
-    }
 }
 

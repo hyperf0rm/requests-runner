@@ -9,7 +9,6 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Tabs extends TabPane {
 
@@ -80,5 +79,20 @@ public class Tabs extends TabPane {
             }
         }
         return headersMap;
+    }
+
+    public void setBody(String body) {
+        if (bodyTab.getContent() instanceof TextArea textArea) {
+            textArea.setText(body);
+        }
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        TableView<Map.Entry<String, String>> headerTable = (TableView<Map.Entry<String, String>>) headersTab.getContent();
+        ObservableList<Map.Entry<String, String>> data = FXCollections.observableArrayList();
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            data.add(new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue()));
+        }
+        headerTable.setItems(data);
     }
 }
