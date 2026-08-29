@@ -2,6 +2,7 @@ package io.github.hyperf0rm.runner.ui;
 
 import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
+import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.service.RunnerService;
 import io.github.hyperf0rm.runner.util.CurlParser;
 import io.github.hyperf0rm.runner.util.TemplateEngine;
@@ -46,11 +47,12 @@ public class MainView extends BorderPane {
         String body = tabs.getBody();
         Map<String, String> headers = tabs.getHeaders();
         List<String> values = rightPanel.getValues();
-        List<Request> requests = new ArrayList<>();
         Request request = new Request(method, url, headers, body);
-        requests = templateEngine.fillWithValues(request, values);
+        List<Request> requests = templateEngine.fillWithValues(request, values);
         RunnerService rs = new RunnerService(requests);
         rs.run();
+        List<Result> results = rs.getResults();
+        rightPanel.createResults(results);
     }
 
     private void showImportCURLPopup(Stage ownerStage) {
