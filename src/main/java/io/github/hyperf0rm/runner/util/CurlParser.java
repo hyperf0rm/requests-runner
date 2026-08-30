@@ -15,7 +15,7 @@ public class CurlParser {
     public Request parse(String curl) {
 
         // method
-        Pattern p = Pattern.compile("--request\\s+([A-Za-z]+)|-X\\s+([A-Za-z]+)");
+        Pattern p = Pattern.compile("(?:--request|-X)\\s+([A-Za-z]+)");
         Matcher methodMatcher = p.matcher(curl);
         String method;
         if (methodMatcher.find()) {
@@ -40,7 +40,7 @@ public class CurlParser {
         System.out.println("URL: " + URL);
 
         // headers
-        p = Pattern.compile("--header\\s+'(.+)'|-H\\s+'(.+)'");
+        p = Pattern.compile("(?:--header|-H)\\s+'(.+)'");
         Matcher headersMatcher = p.matcher(curl);
         Map<String, String> headers = new HashMap<>();
         while (headersMatcher.find()) {
@@ -50,7 +50,7 @@ public class CurlParser {
         }
 
         // body
-        p = Pattern.compile("--data\\s+'(.+)'|-d\\s+'(.+)'", Pattern.DOTALL);
+        p = Pattern.compile("(?:--data|-d)\\s+'(.+)'", Pattern.DOTALL);
         Matcher bodyMatcher = p.matcher(curl);
         String body = "";
 
