@@ -30,7 +30,7 @@ public class CurlParser {
         HttpMethod httpMethod = HttpMethod.fromString(method);
 
         // url
-        p = Pattern.compile("--location\\s+'(.+)'|--url\\+'(.+)'");
+        p = Pattern.compile("'(https?://[^'\"\\s]+)'");
         Matcher urlMatcher = p.matcher(curl);
         String URL = "";
         if (urlMatcher.find()) {
