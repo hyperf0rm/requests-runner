@@ -25,9 +25,9 @@ public class RunnerService {
 
         List<Result> results = new ArrayList<>();
         int id = 1;
-        long start = System.nanoTime();
 
         for (Request request : requests) {
+            long start = System.nanoTime();
             Result result = new Result();
             try {
                 System.out.println("Request: " + request.getMethod() + " " + request.getUrl());
