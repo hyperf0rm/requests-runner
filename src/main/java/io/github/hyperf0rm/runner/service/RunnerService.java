@@ -32,9 +32,7 @@ public class RunnerService {
             try {
                 System.out.println("Request: " + request.getMethod() + " " + request.getUrl());
                 HttpRequest finalRequest = buildFinalRequest(request);
-                HttpResponse<String> response = client
-                        .sendAsync(finalRequest, HttpResponse.BodyHandlers.ofString())
-                        .join();
+                HttpResponse<String> response = client.send(finalRequest, HttpResponse.BodyHandlers.ofString());
                 result.setStatusCode(response.statusCode());
                 result.setResponse(response.body());
             } catch (Exception e){
@@ -52,6 +50,15 @@ public class RunnerService {
             }
 
             results.add(result);
+
+            if (id < requests.size()) {
+                try {
+                    Thread.sleep(1000L);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
 
         }
         return results;

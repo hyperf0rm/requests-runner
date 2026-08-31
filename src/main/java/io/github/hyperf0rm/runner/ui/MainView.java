@@ -6,6 +6,7 @@ import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.service.RunnerService;
 import io.github.hyperf0rm.runner.util.CurlParser;
 import io.github.hyperf0rm.runner.util.TemplateEngine;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -31,7 +32,7 @@ public class MainView extends BorderPane {
     private RunnerService runnerService = new RunnerService();
 
     public MainView() {
-        this.topBar.getSendButton().setOnAction(event -> sendDummyRequest());
+        this.topBar.getSendButton().setOnAction(event -> sendRequests());
         this.topBar.getImportCURLButton().setOnAction(event -> {
             Stage stage = (Stage) this.getScene().getWindow();
             showImportCURLPopup(stage);
@@ -42,7 +43,7 @@ public class MainView extends BorderPane {
         setMargin(tabs, new Insets(10));
     }
 
-    public void sendDummyRequest() {
+    public void sendRequests() {
         String url = topBar.getURL();
         HttpMethod method =  topBar.getMethod();
         String body = tabs.getBody();
@@ -50,8 +51,33 @@ public class MainView extends BorderPane {
         List<String> values = rightPanel.getValues();
         Request request = new Request(method, url, headers, body);
         List<Request> requests = templateEngine.fillWithValues(request, values);
-        List<Result> results = runnerService.run(requests);
-        rightPanel.createResults(results);
+
+        topBar.getSendButton().setDisable(true);
+        Task<List<Result>> runTask = new Task<>() {
+            @Override
+            protected List<Result> call() {
+                return runnerService.run(requests);
+            }
+        };
+
+        runTask.setOnSucceeded(event -> {
+            List<Result> results = runTask.getValue();
+            rightPanel.createResults(results);
+            topBar.getSendButton().setDisable(false);
+        });
+
+        runTask.setOnFailed(event -> {
+            Throwable error = runTask.getException();
+            if (error != null) {
+                System.out.println(error.getMessage());
+            }
+            topBar.getSendButton().setDisable(false);
+        });
+
+        Thread thread = new Thread(runTask);
+        thread.setDaemon(true);
+        thread.start();
+
     }
 
     private void showImportCURLPopup(Stage ownerStage) {
