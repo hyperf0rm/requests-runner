@@ -32,23 +32,20 @@ public class RunnerService {
             long start = System.nanoTime();
             Result result = new Result();
             try {
-                System.out.println("Request: " + request.getMethod() + " " + request.getUrl());
                 HttpRequest finalRequest = buildFinalRequest(request);
                 HttpResponse<String> response = client.send(finalRequest, HttpResponse.BodyHandlers.ofString());
                 result.setStatusCode(response.statusCode());
                 result.setResponse(JsonFormatter.formatJson(response.body()));
             } catch (Exception e){
-                System.out.printf("Error: %s\n", e.getMessage());
                 result.setError(e.getMessage());
             } finally {
                 long duration = Duration.ofNanos(System.nanoTime() - start).toMillis();
                 result.setDuration(duration);
                 result.setId(id);
-                result.setURL(request.getUrl());
-                result.setHeaders(request.getHeaders());
-                result.setPayload(request.getBody());
+                result.setURL(request.url());
+                result.setHeaders(request.headers());
+                result.setPayload(request.body());
                 id++;
-                System.out.printf("Finished Request: %s\n", request.getMethod() + " " + request.getUrl());
             }
 
             results.add(result);
@@ -74,16 +71,16 @@ public class RunnerService {
 
         try {
             HttpRequest.BodyPublisher bodyPublisher;
-            if (request.getMethod().requiresBody() && request.getBody() != null) {
-                bodyPublisher = HttpRequest.BodyPublishers.ofString(request.getBody());
+            if (request.method().requiresBody() && request.body() != null) {
+                bodyPublisher = HttpRequest.BodyPublishers.ofString(request.body());
             } else {
                 bodyPublisher = HttpRequest.BodyPublishers.noBody();
             }
 
             HttpRequest.Builder builder = HttpRequest.newBuilder()
-                    .uri(new URI(request.getUrl()))
-                    .method(request.getMethod().name(), bodyPublisher);
-            Map<String, String> headers = request.getHeaders();
+                    .uri(new URI(request.url()))
+                    .method(request.method().name(), bodyPublisher);
+            Map<String, String> headers = request.headers();
             headers.forEach(builder::header);
 
             return builder.build();

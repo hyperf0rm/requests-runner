@@ -4,18 +4,11 @@ import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.service.RunnerService;
-import io.github.hyperf0rm.runner.util.CurlParser;
 import io.github.hyperf0rm.runner.util.TemplateEngine;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -76,10 +69,10 @@ public class MainView extends BorderPane {
     }
 
     private void applyParsedRequestToUI(Request request) {
-        topBar.setURL(request.getUrl());
-        topBar.setMethod(request.getMethod());
-        tabs.setBody(request.getBody());
-        tabs.setHeaders(request.getHeaders());
+        topBar.setURL(request.url());
+        topBar.setMethod(request.method());
+        tabs.setBody(request.body());
+        tabs.setHeaders(request.headers());
     }
 }
 

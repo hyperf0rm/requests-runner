@@ -32,7 +32,7 @@ public class TemplateEngine {
     }
 
     public static List<Request> fillWithValues (Request request, List<String> values) {
-        boolean hasPlaceholders = hasPlaceholders(request.getBody());
+        boolean hasPlaceholders = hasPlaceholders(request.body());
 
         if (values == null || values.isEmpty() || !hasPlaceholders) {
             return List.of(request);
@@ -41,9 +41,9 @@ public class TemplateEngine {
         List<Request> requests = new ArrayList<>();
 
         for (String value : values) {
-            String filledBody = interpolate(request.getBody(), value);
+            String filledBody = interpolate(request.body(), value);
             Request newRequest = new Request(
-                    request.getMethod(), request.getUrl(), request.getHeaders(), filledBody
+                    request.method(), request.url(), request.headers(), filledBody
             );
             requests.add(newRequest);
         }
