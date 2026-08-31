@@ -37,8 +37,6 @@ public class CurlParser {
             URL = urlMatcher.group(1);
         }
 
-        System.out.println("URL: " + URL);
-
         // headers
         p = Pattern.compile("(?:--header|-H)\\s+'(.+)'");
         Matcher headersMatcher = p.matcher(curl);
