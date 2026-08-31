@@ -4,7 +4,6 @@ import java.util.Map;
 
 public class Result {
     private int id;
-    private String targetValue;
     private float duration;
     private String URL;
     private String payload;
@@ -14,24 +13,6 @@ public class Result {
     private String error;
 
     public Result() {}
-
-    public Result(int id,
-                  long duration,
-                  String URL,
-                  String payload,
-                  Map<String, String> headers,
-                  int statusCode,
-                  String response,
-                  String error) {
-        this.id = id;
-        this.duration = duration;
-        this.URL = URL;
-        this.payload = payload;
-        this.headers = headers;
-        this.statusCode = statusCode;
-        this.response = response;
-        this.error = error;
-    }
 
     public int getId() {
         return id;
