@@ -28,12 +28,13 @@ public class MainView extends BorderPane {
     private Tabs tabs = new Tabs();
     private RightPanel rightPanel = new RightPanel();
     private RunnerService runnerService = new RunnerService();
+    private CurlImportWindow curlImportWindow = new CurlImportWindow();
 
     public MainView() {
         this.topBar.getSendButton().setOnAction(event -> sendRequests());
         this.topBar.getImportCURLButton().setOnAction(event -> {
             Stage stage = (Stage) this.getScene().getWindow();
-            showImportCURLPopup(stage);
+            curlImportWindow.show(stage, this::applyParsedRequestToUI);
         });
         setTop(topBar);
         setCenter(tabs);
@@ -74,27 +75,11 @@ public class MainView extends BorderPane {
         });
     }
 
-    private void showImportCURLPopup(Stage ownerStage) {
-        Stage popupStage = new Stage();
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.initOwner(ownerStage);
-        popupStage.setTitle("Import cURL");
-
-        TextArea textArea = new TextArea();
-        Button importButton = new Button("Import");
-        importButton.setOnAction(event -> {
-            Request request = CurlParser.parse(textArea.getText());
-            topBar.setURL(request.getUrl());
-            topBar.setMethod(request.getMethod());
-            tabs.setBody(request.getBody());
-            tabs.setHeaders(request.getHeaders());
-            popupStage.close();
-        });
-        VBox layout = new VBox(10, new Label("Enter cURL:"), textArea, importButton);
-        layout.setPadding(new Insets(10));
-        Scene popupScene = new Scene(layout, 650, 400);
-        popupStage.setScene(popupScene);
-        popupStage.showAndWait();
+    private void applyParsedRequestToUI(Request request) {
+        topBar.setURL(request.getUrl());
+        topBar.setMethod(request.getMethod());
+        tabs.setBody(request.getBody());
+        tabs.setHeaders(request.getHeaders());
     }
 }
 
