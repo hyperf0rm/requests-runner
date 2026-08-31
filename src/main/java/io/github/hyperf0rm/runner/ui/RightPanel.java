@@ -50,16 +50,15 @@ public class RightPanel extends VBox {
         return new ArrayList<>(Arrays.asList(parts));
     }
 
-    public void createResults(List<Result> results) {
+    public void addSingleResult(Result result) {
+        String title = result.getId() + ". " + result.getURL() + " - " + result.getStatusCode() + " - " + result.getDuration() + " ms";
+        TabPane tabPane = createResultTabs(result);
+        TitledPane pane = new TitledPane(title, tabPane);
+        resultsAccordion.getPanes().add(pane);
+    }
+
+    public void clearResults() {
         resultsAccordion.getPanes().clear();
-        List<TitledPane> panes = new ArrayList<>();
-        for (Result result : results) {
-            String title = result.getURL() + " - " + result.getStatusCode() + " - " + result.getDuration() + " ms";
-            TabPane tabPane = createResultTabs(result);
-            TitledPane pane = new TitledPane(title, tabPane);
-            panes.add(pane);
-        }
-        resultsAccordion.getPanes().addAll(panes);
     }
 
     private TabPane createResultTabs(Result result) {

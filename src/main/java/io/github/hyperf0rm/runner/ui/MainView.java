@@ -6,6 +6,7 @@ import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.service.RunnerService;
 import io.github.hyperf0rm.runner.util.CurlParser;
 import io.github.hyperf0rm.runner.util.TemplateEngine;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -52,32 +53,28 @@ public class MainView extends BorderPane {
         Request request = new Request(method, url, headers, body);
         List<Request> requests = templateEngine.fillWithValues(request, values);
 
+        rightPanel.clearResults();
         topBar.getSendButton().setDisable(true);
+
         Task<List<Result>> runTask = new Task<>() {
             @Override
             protected List<Result> call() {
-                return runnerService.run(requests);
+                return runnerService.run(requests, MainView.this::handleSingleResult);
             }
         };
 
-        runTask.setOnSucceeded(event -> {
-            List<Result> results = runTask.getValue();
-            rightPanel.createResults(results);
-            topBar.getSendButton().setDisable(false);
-        });
-
-        runTask.setOnFailed(event -> {
-            Throwable error = runTask.getException();
-            if (error != null) {
-                System.out.println(error.getMessage());
-            }
-            topBar.getSendButton().setDisable(false);
-        });
+        runTask.setOnSucceeded(event -> topBar.getSendButton().setDisable(false));
+        runTask.setOnFailed(event -> topBar.getSendButton().setDisable(false));
 
         Thread thread = new Thread(runTask);
         thread.setDaemon(true);
         thread.start();
+    }
 
+    private void handleSingleResult(Result result) {
+        Platform.runLater(() -> {
+            rightPanel.addSingleResult(result);
+        });
     }
 
     private void showImportCURLPopup(Stage ownerStage) {
@@ -103,3 +100,4 @@ public class MainView extends BorderPane {
         popupStage.showAndWait();
     }
 }
+

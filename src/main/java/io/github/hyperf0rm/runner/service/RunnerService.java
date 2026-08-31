@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class RunnerService {
 
@@ -21,7 +22,7 @@ public class RunnerService {
         this.client =  HttpClient.newHttpClient();
     }
 
-    public List<Result> run(List<Request> requests) {
+    public List<Result> run(List<Request> requests, Consumer<Result> onResult) {
 
         List<Result> results = new ArrayList<>();
         int id = 1;
@@ -50,6 +51,10 @@ public class RunnerService {
             }
 
             results.add(result);
+
+            if (onResult != null) {
+                onResult.accept(result);
+            }
 
             if (id < requests.size()) {
                 try {
