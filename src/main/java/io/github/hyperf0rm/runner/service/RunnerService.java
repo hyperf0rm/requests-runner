@@ -2,6 +2,7 @@ package io.github.hyperf0rm.runner.service;
 
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
+import io.github.hyperf0rm.runner.util.JsonFormatter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,7 +36,7 @@ public class RunnerService {
                 HttpRequest finalRequest = buildFinalRequest(request);
                 HttpResponse<String> response = client.send(finalRequest, HttpResponse.BodyHandlers.ofString());
                 result.setStatusCode(response.statusCode());
-                result.setResponse(response.body());
+                result.setResponse(JsonFormatter.formatJson(response.body()));
             } catch (Exception e){
                 System.out.printf("Error: %s\n", e.getMessage());
                 result.setError(e.getMessage());
