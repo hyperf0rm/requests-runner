@@ -9,22 +9,39 @@ import java.util.regex.Pattern;
 
 public class TemplateEngine {
 
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{\\{\\w+}}");
+
     private TemplateEngine() {}
 
-    public static List<Request> fillWithValues (Request request, List<String> values) {
-        List<Request> requests = new ArrayList<>();
-        String templateBody = request.getBody();
+    public static boolean hasPlaceholders(String text) {
+        if (text == null || text.isBlank()) {
+            return false;
+        }
+        return PLACEHOLDER_PATTERN.matcher(text).find();
+    }
 
-        Pattern pattern = Pattern.compile("\\{\\{\\w+}}");
-        Matcher matcher = pattern.matcher(templateBody);
-
-        if (!matcher.find()) {
-            requests.add(request);
-            return requests;
+    public static String interpolate(String template, String value) {
+        if (template == null || template.isBlank()) {
+            return template;
+        }
+        if (value == null) {
+            value = "";
         }
 
+        return template.replaceAll(PLACEHOLDER_PATTERN.pattern(), Matcher.quoteReplacement(value));
+    }
+
+    public static List<Request> fillWithValues (Request request, List<String> values) {
+        boolean hasPlaceholders = hasPlaceholders(request.getBody());
+
+        if (values == null || values.isEmpty() || !hasPlaceholders) {
+            return List.of(request);
+        }
+
+        List<Request> requests = new ArrayList<>();
+
         for (String value : values) {
-            String filledBody = templateBody.replaceAll("\\{\\{\\w+}}", value);
+            String filledBody = interpolate(request.getBody(), value);
             Request newRequest = new Request(
                     request.getMethod(), request.getUrl(), request.getHeaders(), filledBody
             );
@@ -32,4 +49,5 @@ public class TemplateEngine {
         }
         return requests;
     }
+
 }
