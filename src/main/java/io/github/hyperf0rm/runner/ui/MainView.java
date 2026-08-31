@@ -28,6 +28,7 @@ public class MainView extends BorderPane {
     private CurlParser curlParser = new CurlParser();
     private RightPanel rightPanel = new RightPanel();
     private TemplateEngine templateEngine = new TemplateEngine();
+    private RunnerService runnerService = new RunnerService();
 
     public MainView() {
         this.topBar.getSendButton().setOnAction(event -> sendDummyRequest());
@@ -49,9 +50,7 @@ public class MainView extends BorderPane {
         List<String> values = rightPanel.getValues();
         Request request = new Request(method, url, headers, body);
         List<Request> requests = templateEngine.fillWithValues(request, values);
-        RunnerService rs = new RunnerService(requests);
-        rs.run();
-        List<Result> results = rs.getResults();
+        List<Result> results = runnerService.run(requests);
         rightPanel.createResults(results);
     }
 

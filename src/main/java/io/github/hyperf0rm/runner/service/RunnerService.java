@@ -15,17 +15,15 @@ import java.util.Map;
 
 public class RunnerService {
 
-    private final List<Request> requests;
-    private List<Result> results;
     private final HttpClient client;
 
-    public RunnerService(List<Request> requests) {
-        this.requests = requests;
-        this.results = new ArrayList<>();
+    public RunnerService() {
         this.client =  HttpClient.newHttpClient();
     }
 
-    public void run() {
+    public List<Result> run(List<Request> requests) {
+
+        List<Result> results = new ArrayList<>();
         int id = 1;
         long start = System.nanoTime();
 
@@ -56,6 +54,7 @@ public class RunnerService {
             results.add(result);
 
         }
+        return results;
     }
 
     private HttpRequest buildFinalRequest(Request request) {
@@ -82,7 +81,4 @@ public class RunnerService {
         }
     }
 
-    public List<Result> getResults() {
-        return this.results;
-    }
 }
