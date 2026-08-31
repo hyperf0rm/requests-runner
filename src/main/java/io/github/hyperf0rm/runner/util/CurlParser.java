@@ -50,13 +50,15 @@ public class CurlParser {
         }
 
         // body
-        p = Pattern.compile("(?:--data|-d)\\s+'(.+)'", Pattern.DOTALL);
+        p = Pattern.compile("(?:--data|-d|--data-raw|--data-binary|--data-urlencode)\\s+'(.+)'", Pattern.DOTALL);
         Matcher bodyMatcher = p.matcher(curl);
         String body = "";
 
         if (bodyMatcher.find()) {
             body = bodyMatcher.group(1);
         }
+
+        body = JsonFormatter.formatJson(body);
 
         return new Request(httpMethod, URL, headers, body);
     }
