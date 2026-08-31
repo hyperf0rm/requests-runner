@@ -10,9 +10,9 @@ import java.util.regex.Pattern;
 
 public class CurlParser {
 
-    public CurlParser() {}
+    private CurlParser() {}
 
-    public Request parse(String curl) {
+    public static Request parse(String curl) {
 
         // method
         Pattern p = Pattern.compile("(?:--request|-X)\\s+([A-Za-z]+)");

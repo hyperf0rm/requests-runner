@@ -9,9 +9,9 @@ import java.util.regex.Pattern;
 
 public class TemplateEngine {
 
-    public TemplateEngine() {}
+    private TemplateEngine() {}
 
-    public List<Request> fillWithValues (Request request, List<String> values) {
+    public static List<Request> fillWithValues (Request request, List<String> values) {
         List<Request> requests = new ArrayList<>();
         String templateBody = request.getBody();
 
