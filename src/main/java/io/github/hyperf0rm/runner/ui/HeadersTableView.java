@@ -58,9 +58,10 @@ public class HeadersTableView extends TableView<Header> {
     private TableColumn<Header, String> createKeyColumn(boolean editable) {
         TableColumn<Header, String> keyColumn = new TableColumn<>("Key");
         keyColumn.setReorderable(false);
+        keyColumn.setSortable(false);
         keyColumn.setCellValueFactory(cellData -> cellData.getValue().keyProperty());
-        keyColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         if (editable) {
+            keyColumn.setCellFactory(TextFieldTableCell.forTableColumn());
             keyColumn.setOnEditCommit(event -> {
                 event.getRowValue().setKey(event.getNewValue());
                 handleRows( event.getTablePosition().getRow());
@@ -72,9 +73,10 @@ public class HeadersTableView extends TableView<Header> {
     private TableColumn<Header, String> createValueColumn(boolean editable) {
         TableColumn<Header, String> valueColumn = new TableColumn<>("Value");
         valueColumn.setReorderable(false);
+        valueColumn.setSortable(false);
         valueColumn.setCellValueFactory(cellData -> cellData.getValue().valueProperty());
-        valueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         if (editable) {
+            valueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
             valueColumn.setOnEditCommit(event -> {
                 event.getRowValue().setValue(event.getNewValue());
                 handleRows( event.getTablePosition().getRow());
