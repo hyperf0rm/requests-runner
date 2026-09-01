@@ -12,12 +12,12 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
-public class RightPanel extends VBox {
+public class ExecutionPanel extends VBox {
 
     private final TextArea valuesTextArea;
     private final Accordion resultsAccordion = new Accordion();
 
-    public RightPanel(double spacing) {
+    public ExecutionPanel(double spacing) {
         super(spacing);
         this.valuesTextArea = new TextArea();
         this.valuesTextArea.setPrefHeight(150);
@@ -38,7 +38,7 @@ public class RightPanel extends VBox {
         VBox.setVgrow(resultsScrollPane, Priority.ALWAYS);
     }
 
-    public RightPanel() {
+    public ExecutionPanel() {
         this(10);
     }
 

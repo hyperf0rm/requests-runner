@@ -11,8 +11,8 @@ import javafx.stage.Stage;
 public class MainView extends BorderPane {
 
     private final TopBar topBar = new TopBar();
-    private final Tabs tabs = new Tabs();
-    private final RightPanel rightPanel = new RightPanel();
+    private final RequestTabsPane requestTabsPane = new RequestTabsPane();
+    private final ExecutionPanel executionPanel = new ExecutionPanel();
     private final CurlImportWindow curlImportWindow = new CurlImportWindow();
     private final MainController controller = new MainController(this);
 
@@ -23,10 +23,10 @@ public class MainView extends BorderPane {
             curlImportWindow.show(stage, this::applyParsedRequestToUI);
         });
 
-        SplitPane splitPane = new SplitPane(tabs, rightPanel);
+        SplitPane splitPane = new SplitPane(requestTabsPane, executionPanel);
         splitPane.setDividerPositions(0.5);
-        SplitPane.setResizableWithParent(tabs, true);
-        SplitPane.setResizableWithParent(rightPanel, false);
+        SplitPane.setResizableWithParent(requestTabsPane, true);
+        SplitPane.setResizableWithParent(executionPanel, false);
 
         setTop(topBar);
         setCenter(splitPane);
@@ -36,20 +36,20 @@ public class MainView extends BorderPane {
     private void applyParsedRequestToUI(Request request) {
         topBar.setUrl(request.url());
         topBar.setMethod(request.method());
-        tabs.setBody(request.body());
-        tabs.setHeaders(request.headers());
+        requestTabsPane.setBody(request.body());
+        requestTabsPane.setHeaders(request.headers());
     }
 
-    public RightPanel getRightPanel() {
-        return this.rightPanel;
+    public ExecutionPanel getExecutionPanel() {
+        return this.executionPanel;
     }
 
     public TopBar getTopBar() {
         return this.topBar;
     }
 
-    public Tabs getTabs() {
-        return this.tabs;
+    public RequestTabsPane getRequestTabsPane() {
+        return this.requestTabsPane;
     }
 }
 

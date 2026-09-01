@@ -24,13 +24,13 @@ public class MainController {
         Request request = new Request(
                 view.getTopBar().getMethod(),
                 view.getTopBar().getUrl(),
-                view.getTabs().getHeaders(),
-                view.getTabs().getBody()
+                view.getRequestTabsPane().getHeaders(),
+                view.getRequestTabsPane().getBody()
         );
-        List<String> values = view.getRightPanel().getValues();
+        List<String> values = view.getExecutionPanel().getValues();
         List<Request> requests = TemplateEngine.fillWithValues(request, values);
 
-        view.getRightPanel().clearResults();
+        view.getExecutionPanel().clearResults();
         view.getTopBar().getSendButton().setDisable(true);
 
         Task<List<Result>> runTask = new Task<>() {
@@ -38,7 +38,7 @@ public class MainController {
             protected List<Result> call() {
                 return runnerService.run(requests, result -> {
                     Platform.runLater(() -> {
-                        view.getRightPanel().addSingleResult(result);
+                        view.getExecutionPanel().addSingleResult(result);
                     });
                 });
             }

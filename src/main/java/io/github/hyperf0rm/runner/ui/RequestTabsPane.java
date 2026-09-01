@@ -5,12 +5,12 @@ import javafx.scene.control.*;
 
 import java.util.*;
 
-public class Tabs extends TabPane {
+public class RequestTabsPane extends TabPane {
 
     private Tab headersTab;
     private Tab bodyTab;
 
-    public Tabs() {
+    public RequestTabsPane() {
         this.headersTab = createHeadersTab();
         this.bodyTab = createBodyTab();
         this.getTabs().addAll(headersTab, bodyTab);
