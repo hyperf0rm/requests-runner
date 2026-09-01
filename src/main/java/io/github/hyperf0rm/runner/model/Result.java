@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Result {
     private int id;
-    private float duration;
+    private long duration;
     private String url;
     private String payload;
     private List<Header> headers;
