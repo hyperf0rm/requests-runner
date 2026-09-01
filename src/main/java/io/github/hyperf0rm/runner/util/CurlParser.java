@@ -1,10 +1,11 @@
 package io.github.hyperf0rm.runner.util;
 
+import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,11 +41,11 @@ public class CurlParser {
         // headers
         p = Pattern.compile("(?:--header|-H)\\s+'(.+)'");
         Matcher headersMatcher = p.matcher(curl);
-        Map<String, String> headers = new HashMap<>();
+       List<Header> headers = new ArrayList<>();
         while (headersMatcher.find()) {
             String header = headersMatcher.group(1);
             String[] parts = header.split(":\\s*", 2);
-            headers.put(parts[0], parts[1]);
+            headers.add(new Header(parts[0], parts[1]));
         }
 
         // body

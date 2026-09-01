@@ -1,5 +1,6 @@
 package io.github.hyperf0rm.runner.ui;
 
+import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
@@ -12,7 +13,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.util.List;
-import java.util.Map;
 
 
 public class MainView extends BorderPane {
@@ -39,7 +39,7 @@ public class MainView extends BorderPane {
         String url = topBar.getURL();
         HttpMethod method =  topBar.getMethod();
         String body = tabs.getBody();
-        Map<String, String> headers = tabs.getHeaders();
+        List<Header> headers = tabs.getHeaders();
         List<String> values = rightPanel.getValues();
         Request request = new Request(method, url, headers, body);
         List<Request> requests = TemplateEngine.fillWithValues(request, values);

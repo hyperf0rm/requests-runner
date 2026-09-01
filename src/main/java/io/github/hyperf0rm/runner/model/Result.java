@@ -1,13 +1,13 @@
 package io.github.hyperf0rm.runner.model;
 
-import java.util.Map;
+import java.util.List;
 
 public class Result {
     private int id;
     private float duration;
     private String URL;
     private String payload;
-    private Map<String, String> headers;
+    private List<Header> headers;
     private int statusCode;
     private String response;
     private String error;
@@ -46,11 +46,11 @@ public class Result {
         this.payload = payload;
     }
 
-    public Map<String, String> getHeaders() {
+    public List<Header> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
+    public void setHeaders(List<Header> headers) {
         this.headers = headers;
     }
 

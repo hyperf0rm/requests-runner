@@ -1,5 +1,6 @@
 package io.github.hyperf0rm.runner.service;
 
+import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.util.JsonFormatter;
@@ -12,7 +13,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class RunnerService {
@@ -80,8 +80,8 @@ public class RunnerService {
             HttpRequest.Builder builder = HttpRequest.newBuilder()
                     .uri(new URI(request.url()))
                     .method(request.method().name(), bodyPublisher);
-            Map<String, String> headers = request.headers();
-            headers.forEach(builder::header);
+            List<Header> headers = request.headers();
+            headers.forEach(h -> builder.header(h.getKey(), h.getValue()));
 
             return builder.build();
 

@@ -1,14 +1,9 @@
 package io.github.hyperf0rm.runner.ui;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import io.github.hyperf0rm.runner.model.Header;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Tabs extends TabPane {
 
@@ -22,32 +17,7 @@ public class Tabs extends TabPane {
     }
 
     private Tab createHeadersTab() {
-        TableView<Map.Entry<String, String>> headerTable =  new TableView<>();
-        headerTable.setEditable(true);
-        headerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        TableColumn<Map.Entry<String, String>, String> keyColumn = new TableColumn<>("Key");
-        keyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKey()));
-        keyColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        keyColumn.setOnEditCommit(event -> {
-            int row = event.getTablePosition().getRow();
-            String currentValue = event.getRowValue().getValue();
-            event.getTableView().getItems().set(row, new AbstractMap.SimpleEntry<>(event.getNewValue(), currentValue));
-        });
-        TableColumn<Map.Entry<String, String>, String> valueColumn = new TableColumn<>("Value");
-        valueColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getValue()));
-        valueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        valueColumn.setOnEditCommit(event -> {
-            int row = event.getTablePosition().getRow();
-            String currentKey = event.getRowValue().getKey();
-            event.getTableView().getItems().set(row, new AbstractMap.SimpleEntry<>(currentKey, event.getNewValue()));
-        });
-        headerTable.getColumns().add(keyColumn);
-        headerTable.getColumns().add(valueColumn);
-        ObservableList<Map.Entry<String, String>> data = FXCollections.observableArrayList();
-        for (int i = 0; i < 30; i++) {
-            data.add(new AbstractMap.SimpleEntry<>("", ""));
-        }
-        headerTable.setItems(data);
+        HeadersTableView headerTable =  new HeadersTableView(true);
         headersTab = new Tab("Headers", headerTable);
         headersTab.setClosable(false);
         return headersTab;
@@ -66,19 +36,9 @@ public class Tabs extends TabPane {
         return "";
     }
 
-    public Map<String, String> getHeaders() {
-        TableView<Map.Entry<String, String>> table = (TableView<Map.Entry<String, String>>) headersTab.getContent();
-        Map<String, String> headersMap = new HashMap<>();
-        for (Map.Entry<String, String> entry : table.getItems()) {
-            String rawKey = entry.getKey();
-            if (rawKey != null && !rawKey.trim().isEmpty()) {
-                String cleanKey = rawKey.trim();
-                String rawValue = entry.getValue();
-                String cleanValue = (rawValue != null) ? rawValue.trim() : "";
-                headersMap.put(cleanKey, cleanValue);
-            }
-        }
-        return headersMap;
+    public List<Header> getHeaders() {
+        HeadersTableView table = (HeadersTableView) headersTab.getContent();
+        return table.getHeaders();
     }
 
     public void setBody(String body) {
@@ -87,12 +47,8 @@ public class Tabs extends TabPane {
         }
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        TableView<Map.Entry<String, String>> headerTable = (TableView<Map.Entry<String, String>>) headersTab.getContent();
-        ObservableList<Map.Entry<String, String>> data = FXCollections.observableArrayList();
-        for (Map.Entry<String, String> entry : headers.entrySet()) {
-            data.add(new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue()));
-        }
-        headerTable.setItems(data);
+    public void setHeaders(List<Header> headers) {
+        HeadersTableView headerTable = (HeadersTableView) headersTab.getContent();
+        headerTable.setHeaders(headers);
     }
 }
