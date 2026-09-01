@@ -45,7 +45,7 @@ public class TopBar extends HBox {
         return tf;
     }
 
-    public String getURL() {
+    public String getUrl() {
         return urlTextField.getText();
     }
 
@@ -59,7 +59,7 @@ public class TopBar extends HBox {
 
     public Button getImportCURLButton() { return  importCURLButton; }
 
-    public void setURL(String url) {
+    public void setUrl(String url) {
         urlTextField.setText(url);
     }
 

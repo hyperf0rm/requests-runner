@@ -48,7 +48,7 @@ public class RightPanel extends VBox {
     }
 
     public void addSingleResult(Result result) {
-        String title = result.getId() + ". " + result.getURL() + " - " + result.getStatusCode() + " - " + result.getDuration() + " ms";
+        String title = result.getId() + ". " + result.getUrl() + " - " + result.getStatusCode() + " - " + result.getDuration() + " ms";
         TabPane tabPane = createResultTabs(result);
         TitledPane pane = new TitledPane(title, tabPane);
         resultsAccordion.getPanes().add(pane);

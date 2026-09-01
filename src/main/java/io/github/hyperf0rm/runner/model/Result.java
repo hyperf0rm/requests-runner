@@ -5,7 +5,7 @@ import java.util.List;
 public class Result {
     private int id;
     private float duration;
-    private String URL;
+    private String url;
     private String payload;
     private List<Header> headers;
     private int statusCode;
@@ -30,12 +30,12 @@ public class Result {
         this.duration = duration;
     }
 
-    public String getURL() {
-        return URL;
+    public String getUrl() {
+        return url;
     }
 
-    public void setURL(String URL) {
-        this.URL = URL;
+    public void setURL(String url) {
+        this.url = url;
     }
 
     public String getPayload() {
