@@ -58,17 +58,18 @@ public class RightPanel extends VBox {
 
     private TabPane createResultTabs(Result result) {
         TabPane tabPane = new TabPane();
-        Tab headersTab = createHeadersTab(result.getHeaders());
+        Tab headersTab = createHeadersTab("Headers", result.getHeaders());
         Tab payloadTab = createTextTab("Payload", result.getPayload());
-        Tab responseTab = createTextTab("Response", result.getResponse());
+        Tab responseTab = createTextTab("Response body", result.getResponse());
+        Tab responseHeadersTab = createHeadersTab("Response headers", result.getResponseHeaders());
         Tab errorTab = createTextTab("Error", result.getError());
-        tabPane.getTabs().addAll(headersTab, payloadTab, responseTab, errorTab);
+        tabPane.getTabs().addAll(headersTab, payloadTab, responseTab, responseHeadersTab, errorTab);
         return tabPane;
     }
 
-    private Tab createHeadersTab(List<Header> headers) {
+    private Tab createHeadersTab(String label, List<Header> headers) {
         HeadersTableView headerTable = new HeadersTableView(false, headers);
-        Tab headersTab = new Tab("Headers", headerTable);
+        Tab headersTab = new Tab(label, headerTable);
         headersTab.setClosable(false);
         return headersTab;
     }

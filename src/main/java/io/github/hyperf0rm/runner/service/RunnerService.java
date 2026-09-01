@@ -13,6 +13,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class RunnerService {
@@ -36,6 +37,16 @@ public class RunnerService {
                 HttpResponse<String> response = client.send(finalRequest, HttpResponse.BodyHandlers.ofString());
                 result.setStatusCode(response.statusCode());
                 result.setResponse(JsonFormatter.formatJson(response.body()));
+                Map<String, List<String>> headers = response.headers().map();
+                List<Header> processedHeaders = new ArrayList<>();
+                for (Map.Entry<String, List<String>> header : headers.entrySet()) {
+                    if (header.getKey().startsWith(":")) {
+                        continue;
+                    }
+                    String value = String.join(", ", header.getValue());
+                    processedHeaders.add(new Header(header.getKey(), value));
+                }
+                result.setResponseHeaders(processedHeaders);
             } catch (Exception e){
                 result.setError(e.getMessage());
             } finally {

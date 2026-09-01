@@ -8,6 +8,7 @@ public class Result {
     private String url;
     private String payload;
     private List<Header> headers;
+    private List<Header> responseHeaders;
     private int statusCode;
     private String response;
     private String error;
@@ -76,5 +77,13 @@ public class Result {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public List<Header> getResponseHeaders() {
+        return responseHeaders;
+    }
+
+    public void setResponseHeaders(List<Header> responseHeaders) {
+        this.responseHeaders = responseHeaders;
     }
 }
