@@ -3,6 +3,7 @@ package io.github.hyperf0rm.runner.ui;
 import io.github.hyperf0rm.runner.controller.UiController;
 import io.github.hyperf0rm.runner.model.Request;
 import javafx.geometry.Insets;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -21,10 +22,15 @@ public class MainView extends BorderPane {
             Stage stage = (Stage) this.getScene().getWindow();
             curlImportWindow.show(stage, this::applyParsedRequestToUI);
         });
+
+        SplitPane splitPane = new SplitPane(tabs, rightPanel);
+        splitPane.setDividerPositions(0.5);
+        SplitPane.setResizableWithParent(tabs, true);
+        SplitPane.setResizableWithParent(rightPanel, false);
+
         setTop(topBar);
-        setCenter(tabs);
-        setRight(rightPanel);
-        setMargin(tabs, new Insets(10));
+        setCenter(splitPane);
+        setMargin(splitPane, new Insets(10));
     }
 
     private void applyParsedRequestToUI(Request request) {

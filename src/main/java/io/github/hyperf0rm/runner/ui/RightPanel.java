@@ -4,12 +4,11 @@ import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.Result;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 import java.util.*;
 
@@ -49,22 +48,36 @@ public class RightPanel extends VBox {
     }
 
     public void addSingleResult(Result result) {
-        Text prefix = new Text(result.getId() + ". " + result.getUrl() + " - ");
-        Text statusCode = new Text(String.valueOf(result.getStatusCode()));
-        if (statusCode.getText().startsWith("2")) {
-            statusCode.setFill(Color.LIGHTGREEN);
-        } else if (statusCode.getText().startsWith("4") || statusCode.getText().startsWith("5")) {
-            statusCode.setFill(Color.INDIANRED);
-        } else {
-            statusCode.setFill(Color.LIGHTSKYBLUE);
-        }
-        Text suffix = new Text(" - " + result.getDuration() + " ms");
-        TextFlow title = new TextFlow(prefix, statusCode, suffix);
-        TabPane tabPane = createResultTabs(result);
         TitledPane pane = new TitledPane();
-        pane.setGraphic(title);
-        pane.setContent(tabPane);
+        pane.setMinWidth(0);
+        pane.setGraphic(createTitleBox(result));
+        pane.setContent(createResultTabs(result));
         resultsAccordion.getPanes().add(pane);
+    }
+
+    private HBox createTitleBox(Result result) {
+        Label idLabel = new Label(result.getId() + ". ");
+        idLabel.setMinWidth(Region.USE_PREF_SIZE);
+
+        Label urlLabel = new Label(result.getUrl() + " - ");
+        urlLabel.setTextOverrun(OverrunStyle.ELLIPSIS);
+        urlLabel.setMinWidth(0);
+        urlLabel.setTooltip(new Tooltip(result.getUrl()));
+
+        Label statusCodeLabel = new Label(String.valueOf(result.getStatusCode()));
+        statusCodeLabel.setMinWidth(Region.USE_PREF_SIZE);
+        statusCodeLabel.setTextFill(getStatusColor(result.getStatusCode()));
+
+        Label durationLabel = new Label(" - " + result.getDuration() + " ms");
+        durationLabel.setMinWidth(Region.USE_PREF_SIZE);
+
+        return new HBox(idLabel, urlLabel, statusCodeLabel, durationLabel);
+    }
+
+    private Color getStatusColor(int statusCode) {
+        if (statusCode >= 200 && statusCode < 300) return Color.LIGHTGREEN;
+        if (statusCode >= 400) return Color.INDIANRED;
+        return Color.LIGHTSKYBLUE;
     }
 
     public void clearResults() {
@@ -72,14 +85,13 @@ public class RightPanel extends VBox {
     }
 
     private TabPane createResultTabs(Result result) {
-        TabPane tabPane = new TabPane();
-        Tab headersTab = createHeadersTab("Headers", result.getHeaders());
-        Tab payloadTab = createTextTab("Payload", result.getPayload());
-        Tab responseTab = createTextTab("Response body", result.getResponse());
-        Tab responseHeadersTab = createHeadersTab("Response headers", result.getResponseHeaders());
-        Tab errorTab = createTextTab("Error", result.getError());
-        tabPane.getTabs().addAll(headersTab, payloadTab, responseTab, responseHeadersTab, errorTab);
-        return tabPane;
+        return new TabPane(
+                createHeadersTab("Headers", result.getHeaders()),
+                createTextTab("Payload", result.getPayload()),
+                createTextTab("Response body", result.getResponse()),
+                createHeadersTab("Response headers", result.getResponseHeaders()),
+                createTextTab("Error", result.getError())
+        );
     }
 
     private Tab createHeadersTab(String label, List<Header> headers) {
