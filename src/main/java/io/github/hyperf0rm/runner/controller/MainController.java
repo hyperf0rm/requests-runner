@@ -10,12 +10,12 @@ import javafx.concurrent.Task;
 
 import java.util.List;
 
-public class UiController {
+public class MainController {
 
     private final RunnerService runnerService = new RunnerService();
     private final MainView view;
 
-    public UiController(MainView view) {
+    public MainController(MainView view) {
         this.view = view;
     }
 

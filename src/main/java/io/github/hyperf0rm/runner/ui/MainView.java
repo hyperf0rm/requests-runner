@@ -1,6 +1,6 @@
 package io.github.hyperf0rm.runner.ui;
 
-import io.github.hyperf0rm.runner.controller.UiController;
+import io.github.hyperf0rm.runner.controller.MainController;
 import io.github.hyperf0rm.runner.model.Request;
 import javafx.geometry.Insets;
 import javafx.scene.control.SplitPane;
@@ -14,7 +14,7 @@ public class MainView extends BorderPane {
     private final Tabs tabs = new Tabs();
     private final RightPanel rightPanel = new RightPanel();
     private final CurlImportWindow curlImportWindow = new CurlImportWindow();
-    private final UiController controller = new UiController(this);
+    private final MainController controller = new MainController(this);
 
     public MainView() {
         this.topBar.getSendButton().setOnAction(event -> controller.sendRequests());
