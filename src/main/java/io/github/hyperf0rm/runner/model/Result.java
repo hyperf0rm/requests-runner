@@ -23,7 +23,7 @@ public class Result {
         this.id = id;
     }
 
-    public float getDuration() {
+    public long getDuration() {
         return duration;
     }
 
