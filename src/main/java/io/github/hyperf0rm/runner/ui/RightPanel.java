@@ -13,8 +13,6 @@ import java.util.*;
 public class RightPanel extends VBox {
 
     private final TextArea valuesTextArea;
-    private final ScrollPane resultsScrollPane;
-    private final VBox resultsContainer;
     private final Accordion resultsAccordion = new Accordion();
 
     public RightPanel(double spacing) {
@@ -26,16 +24,16 @@ public class RightPanel extends VBox {
         this.setPadding(new Insets(10));
         VBox.setVgrow(this.valuesTextArea, Priority.NEVER);
 
-        this.resultsContainer = new VBox(spacing);
-        this.resultsContainer.getChildren().add(this.resultsAccordion);
-        this.resultsScrollPane = new ScrollPane(this.resultsContainer);
+        VBox resultsContainer = new VBox(spacing);
+        resultsContainer.getChildren().add(this.resultsAccordion);
+        ScrollPane resultsScrollPane = new ScrollPane(resultsContainer);
 
-        this.resultsScrollPane.setFitToWidth(true);
-        this.resultsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        this.resultsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        resultsScrollPane.setFitToWidth(true);
+        resultsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        resultsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        this.getChildren().add(this.resultsScrollPane);
-        VBox.setVgrow(this.resultsScrollPane, Priority.ALWAYS);
+        this.getChildren().add(resultsScrollPane);
+        VBox.setVgrow(resultsScrollPane, Priority.ALWAYS);
     }
 
     public RightPanel() {
