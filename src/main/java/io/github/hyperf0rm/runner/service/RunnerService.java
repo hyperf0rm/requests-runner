@@ -45,7 +45,6 @@ public class RunnerService {
                 result.setURL(request.url());
                 result.setHeaders(request.headers());
                 result.setPayload(request.body());
-                id++;
             }
 
             results.add(result);
@@ -62,7 +61,7 @@ public class RunnerService {
                     break;
                 }
             }
-
+            id++;
         }
         return results;
     }
