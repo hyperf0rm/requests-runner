@@ -7,6 +7,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.util.*;
 
@@ -46,9 +49,21 @@ public class RightPanel extends VBox {
     }
 
     public void addSingleResult(Result result) {
-        String title = result.getId() + ". " + result.getUrl() + " - " + result.getStatusCode() + " - " + result.getDuration() + " ms";
+        Text prefix = new Text(result.getId() + ". " + result.getUrl() + " - ");
+        Text statusCode = new Text(String.valueOf(result.getStatusCode()));
+        if (statusCode.getText().startsWith("2")) {
+            statusCode.setFill(Color.LIGHTGREEN);
+        } else if (statusCode.getText().startsWith("4") || statusCode.getText().startsWith("5")) {
+            statusCode.setFill(Color.INDIANRED);
+        } else {
+            statusCode.setFill(Color.LIGHTSKYBLUE);
+        }
+        Text suffix = new Text(" - " + result.getDuration() + " ms");
+        TextFlow title = new TextFlow(prefix, statusCode, suffix);
         TabPane tabPane = createResultTabs(result);
-        TitledPane pane = new TitledPane(title, tabPane);
+        TitledPane pane = new TitledPane();
+        pane.setGraphic(title);
+        pane.setContent(tabPane);
         resultsAccordion.getPanes().add(pane);
     }
 
