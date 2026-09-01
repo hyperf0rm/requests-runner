@@ -28,7 +28,7 @@ public class CurlImportWindow {
         importButton.setOnAction(event -> {
             String text = textArea.getText();
             if (text != null && !text.isBlank()) {
-                Request request = CurlParser.parse(textArea.getText());
+                Request request = CurlParser.parse(text);
                 onImport.accept(request);
             }
             popupStage.close();
