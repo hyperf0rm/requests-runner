@@ -53,7 +53,7 @@ public class RunnerService {
                 long duration = Duration.ofNanos(System.nanoTime() - start).toMillis();
                 result.setDuration(duration);
                 result.setId(id);
-                result.setURL(request.url());
+                result.setUrl(request.url());
                 result.setHeaders(request.headers());
                 result.setPayload(request.body());
             }

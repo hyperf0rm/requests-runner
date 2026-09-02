@@ -28,7 +28,7 @@ public class TemplateEngine {
             value = "";
         }
 
-        return template.replaceAll(PLACEHOLDER_PATTERN.pattern(), Matcher.quoteReplacement(value));
+        return PLACEHOLDER_PATTERN.matcher(template).replaceAll(Matcher.quoteReplacement(value));
     }
 
     public static List<Request> fillWithValues (Request request, List<String> values) {

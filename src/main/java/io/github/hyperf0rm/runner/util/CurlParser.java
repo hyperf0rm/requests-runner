@@ -11,13 +11,17 @@ import java.util.regex.Pattern;
 
 public class CurlParser {
 
+    private static final Pattern METHOD_TEMPLATE = Pattern.compile("(?:--request|-X)\\s+([A-Za-z]+)");;
+    private static final Pattern URL_TEMPLATE = Pattern.compile("'(https?://[^'\"\\s]+)'");
+    private static final Pattern HEADER_TEMPLATE = Pattern.compile("(?:--header|-H)\\s+'(.+)'");
+    private static final Pattern BODY_TEMPLATE = Pattern.compile("(?:--data|-d|--data-raw|--data-binary|--data-urlencode)\\s+'(.+)'", Pattern.DOTALL);
+
     private CurlParser() {}
 
     public static Request parse(String curl) {
 
         // method
-        Pattern p = Pattern.compile("(?:--request|-X)\\s+([A-Za-z]+)");
-        Matcher methodMatcher = p.matcher(curl);
+        Matcher methodMatcher = METHOD_TEMPLATE.matcher(curl);
         String method;
         if (methodMatcher.find()) {
             method = methodMatcher.group(1);
@@ -31,17 +35,15 @@ public class CurlParser {
         HttpMethod httpMethod = HttpMethod.fromString(method);
 
         // url
-        p = Pattern.compile("'(https?://[^'\"\\s]+)'");
-        Matcher urlMatcher = p.matcher(curl);
-        String URL = "";
+        Matcher urlMatcher = URL_TEMPLATE.matcher(curl);
+        String url = "";
         if (urlMatcher.find()) {
-            URL = urlMatcher.group(1);
+            url = urlMatcher.group(1);
         }
 
         // headers
-        p = Pattern.compile("(?:--header|-H)\\s+'(.+)'");
-        Matcher headersMatcher = p.matcher(curl);
-       List<Header> headers = new ArrayList<>();
+        Matcher headersMatcher = HEADER_TEMPLATE.matcher(curl);
+        List<Header> headers = new ArrayList<>();
         while (headersMatcher.find()) {
             String header = headersMatcher.group(1);
             String[] parts = header.split(":\\s*", 2);
@@ -49,8 +51,7 @@ public class CurlParser {
         }
 
         // body
-        p = Pattern.compile("(?:--data|-d|--data-raw|--data-binary|--data-urlencode)\\s+'(.+)'", Pattern.DOTALL);
-        Matcher bodyMatcher = p.matcher(curl);
+        Matcher bodyMatcher = BODY_TEMPLATE.matcher(curl);
         String body = "";
 
         if (bodyMatcher.find()) {
@@ -59,7 +60,7 @@ public class CurlParser {
 
         body = JsonFormatter.formatJson(body);
 
-        return new Request(httpMethod, URL, headers, body);
+        return new Request(httpMethod, url, headers, body);
     }
 
 }

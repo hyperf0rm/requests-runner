@@ -15,8 +15,6 @@ import java.util.function.Consumer;
 
 public class CurlImportWindow {
 
-    public CurlImportWindow() {}
-
     public void show(Stage ownerStage, Consumer<Request> onImport) {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);

@@ -7,48 +7,30 @@ import java.util.*;
 
 public class RequestTabsPane extends TabPane {
 
-    private Tab headersTab;
-    private Tab bodyTab;
+    private final HeadersTableView headersTableView = new HeadersTableView(true);
+    private final TextArea bodyTextArea = new TextArea();
 
     public RequestTabsPane() {
-        this.headersTab = createHeadersTab();
-        this.bodyTab = createBodyTab();
+        Tab headersTab = new Tab("Headers", headersTableView);
+        headersTab.setClosable(false);
+        Tab bodyTab = new Tab("Body", bodyTextArea);
+        bodyTab.setClosable(false);
         this.getTabs().addAll(headersTab, bodyTab);
     }
 
-    private Tab createHeadersTab() {
-        HeadersTableView headerTable =  new HeadersTableView(true);
-        headersTab = new Tab("Headers", headerTable);
-        headersTab.setClosable(false);
-        return headersTab;
-    }
-
-    private Tab createBodyTab() {
-        bodyTab = new Tab("Body", new TextArea());
-        bodyTab.setClosable(false);
-        return bodyTab;
-    }
-
     public String getBody() {
-        if (bodyTab.getContent() instanceof TextArea textArea) {
-            return textArea.getText();
-        }
-        return "";
+        return bodyTextArea.getText();
     }
 
     public List<Header> getHeaders() {
-        HeadersTableView table = (HeadersTableView) headersTab.getContent();
-        return table.getHeaders();
+        return headersTableView.getHeaders();
     }
 
     public void setBody(String body) {
-        if (bodyTab.getContent() instanceof TextArea textArea) {
-            textArea.setText(body);
-        }
+        bodyTextArea.setText(body);
     }
 
     public void setHeaders(List<Header> headers) {
-        HeadersTableView headerTable = (HeadersTableView) headersTab.getContent();
-        headerTable.setHeaders(headers);
+        headersTableView.setHeaders(headers);
     }
 }

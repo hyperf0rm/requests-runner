@@ -97,7 +97,7 @@ public class HeadersTableView extends TableView<Header> {
         }
 
         if (!headerIsEmpty && editedRow == headers.size() - 1) {
-                headers.add(new Header("", ""));
-            }
+            headers.add(new Header("", ""));
         }
     }
+}
