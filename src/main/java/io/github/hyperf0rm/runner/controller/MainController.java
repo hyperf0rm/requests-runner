@@ -21,9 +21,18 @@ public class MainController {
 
     public void sendRequests() {
 
+        String url = view.getTopBar().getUrl();
+
+        if (url == null || url.isBlank()) {
+            view.getTopBar().setUrlError();
+            return;
+        }
+
+        String normalizedUrl = runnerService.normalizeUrl(url);
+
         Request request = new Request(
                 view.getTopBar().getMethod(),
-                view.getTopBar().getUrl(),
+                normalizedUrl,
                 view.getRequestTabsPane().getHeaders(),
                 view.getRequestTabsPane().getBody()
         );

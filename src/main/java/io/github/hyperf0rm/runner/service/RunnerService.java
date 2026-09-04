@@ -101,4 +101,15 @@ public class RunnerService {
         }
     }
 
+    public String normalizeUrl(String url) {
+        if (url == null) return "";
+        String cleanUrl = url.trim();
+        if (cleanUrl.isEmpty()) return "";
+
+        if (!cleanUrl.startsWith("http://") && !cleanUrl.startsWith("https://")) {
+            return "https://" + cleanUrl;
+        }
+        return cleanUrl;
+    }
+
 }

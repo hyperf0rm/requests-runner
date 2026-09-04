@@ -20,6 +20,11 @@ public class TopBar extends HBox {
         super(8);
         this.methodChoiceBox = createMethodChoiceBox();
         this.urlTextField = createUrlTextField();
+        this.urlTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.isBlank()) {
+                removeUrlError();
+            }
+        });
         this.sendButton = new Button("Send");
         this.importCURLButton = new Button("Import cURL");
         this.getChildren().addAll(importCURLButton, methodChoiceBox, urlTextField, sendButton);
@@ -39,6 +44,15 @@ public class TopBar extends HBox {
         tf.setMaxWidth(Double.MAX_VALUE);
         tf.setPromptText("URL");
         return tf;
+    }
+
+    public void setUrlError() {
+        urlTextField.setStyle("-fx-border-color: #e74c3c;");
+        urlTextField.requestFocus();
+    }
+
+    public void removeUrlError() {
+        urlTextField.setStyle("");
     }
 
     public String getUrl() {
@@ -61,5 +75,9 @@ public class TopBar extends HBox {
 
     public void setMethod(HttpMethod method) {
         methodChoiceBox.setValue(method);
+    }
+
+    public TextField getUrlTextField() {
+        return urlTextField;
     }
 }
