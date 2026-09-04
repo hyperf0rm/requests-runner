@@ -1,0 +1,11 @@
+.horizontal-tab-pane *.tab {
+    -fx-pref-width: 60px;
+    -fx-padding: 20px;
+    -fx-border-width: 1 1 0 1;
+    /* tab borders: left top right bottom */
+    -fx-border-color: transparent rgb(30, 34, 44) transparent rgb(30, 34, 44);
+}
+.horizontal-tab-pane *.tab:selected {
+    -fx-background-color: rgb(74, 88, 140);
+    -fx-border-color: rgb(82, 139, 235) transparent transparent transparent;
+}
