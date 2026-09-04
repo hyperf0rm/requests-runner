@@ -1,5 +1,6 @@
 package io.github.hyperf0rm.runner.ui.tools;
 
+import io.github.hyperf0rm.runner.service.tools.Codec;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,7 +15,7 @@ public class DecoderEncoderView extends BorderPane {
     private final Button decodeButton = new Button("Decode");
     private final Button encodeButton = new Button("Encode");
 
-    public DecoderEncoderView() {
+    public DecoderEncoderView(Codec codec) {
 
         VBox inputVBox = createVBoxContainer("Input:", inputTextArea, true);
         VBox outputVBox = createVBoxContainer("Output:", outputTextArea, false);
@@ -27,6 +28,16 @@ public class DecoderEncoderView extends BorderPane {
         actionBar.setSpacing(10);
         actionBar.setPadding(new Insets(10, 10, 0, 10));
         actionBar.setAlignment(Pos.CENTER);
+        encodeButton.disableProperty().bind(inputTextArea.textProperty().isEmpty());
+        decodeButton.disableProperty().bind(inputTextArea.textProperty().isEmpty());
+        encodeButton.setOnAction(event -> {
+            String output = codec.encode(inputTextArea.getText());
+            outputTextArea.setText(output);
+        });
+        decodeButton.setOnAction(event -> {
+            String output = codec.decode(inputTextArea.getText());
+            outputTextArea.setText(output);
+        });
         actionBar.getChildren().addAll(decodeButton, encodeButton);
         setTop(actionBar);
         setCenter(gridPane);

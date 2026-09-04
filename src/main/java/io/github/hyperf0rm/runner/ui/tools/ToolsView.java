@@ -1,5 +1,6 @@
 package io.github.hyperf0rm.runner.ui.tools;
 
+import io.github.hyperf0rm.runner.service.tools.UrlCodec;
 import javafx.application.Platform;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -11,7 +12,7 @@ import javafx.scene.control.TabPane;
 public class ToolsView extends TabPane {
 
     private static final double TAB_WIDTH = 150.0;
-    private final DecoderEncoderView urlDecoderView = new DecoderEncoderView();
+    private final DecoderEncoderView urlDecoderView = new DecoderEncoderView(new UrlCodec());
 
     public ToolsView() {
         this.setSide(Side.LEFT);
