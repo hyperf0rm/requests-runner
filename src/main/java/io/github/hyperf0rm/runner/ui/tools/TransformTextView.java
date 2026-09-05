@@ -8,6 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 
+import java.util.function.UnaryOperator;
+
 public class TransformTextView extends BorderPane {
 
     private final TextArea inputTextArea = new TextArea();
@@ -42,11 +44,15 @@ public class TransformTextView extends BorderPane {
         setMargin(gridPane, new Insets(10));
     }
 
-    public static TransformTextView ofCodec(Codec codec) {
+    public static TransformTextView forCodec(Codec codec) {
         return new TransformTextView(
                 new TransformTextAction("Decode", codec::decode),
                 new TransformTextAction("Encode", codec::encode)
         );
+    }
+
+    public static TransformTextView forSingleAction(String name, UnaryOperator<String> action) {
+        return new TransformTextView(new TransformTextAction(name, action));
     }
 
     private VBox createVBoxContainer(String labelName, TextArea textArea, boolean isEditable) {

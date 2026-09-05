@@ -1,5 +1,7 @@
 package io.github.hyperf0rm.runner.util;
 
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.StreamReadFeature;
 import tools.jackson.core.json.JsonReadFeature;
 import tools.jackson.core.util.DefaultIndenter;
 import tools.jackson.core.util.DefaultPrettyPrinter;
@@ -16,6 +18,7 @@ public class JsonFormatter {
     private static final ObjectMapper MAPPER = JsonMapper.builder()
             .enable(SerializationFeature.INDENT_OUTPUT)
             .enable(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS)
+            .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
             .defaultPrettyPrinter(PRETTY_PRINTER)
             .build();
 
@@ -28,9 +31,8 @@ public class JsonFormatter {
         try {
             Object jsonObject = MAPPER.readValue(rawBody, Object.class);
             return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return rawBody;
+        } catch (JacksonException e) {
+            return e.getMessage();
         }
     }
 }

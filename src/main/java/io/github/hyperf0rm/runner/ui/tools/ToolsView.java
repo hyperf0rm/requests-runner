@@ -2,6 +2,7 @@ package io.github.hyperf0rm.runner.ui.tools;
 
 import io.github.hyperf0rm.runner.service.tools.UnicodeCodec;
 import io.github.hyperf0rm.runner.service.tools.UrlCodec;
+import io.github.hyperf0rm.runner.util.JsonFormatter;
 import javafx.application.Platform;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -13,8 +14,10 @@ import javafx.scene.control.TabPane;
 public class ToolsView extends TabPane {
 
     private static final double TAB_WIDTH = 150.0;
-    private final TransformTextView urlDecoderView = TransformTextView.ofCodec(new UrlCodec());
-    private final TransformTextView unicodeDecoderView = TransformTextView.ofCodec(new UnicodeCodec());
+    private final TransformTextView urlDecoderView = TransformTextView.forCodec(new UrlCodec());
+    private final TransformTextView unicodeDecoderView = TransformTextView.forCodec(new UnicodeCodec());
+    private final TransformTextView jsonFormatterView =
+            TransformTextView.forSingleAction("Format JSON", JsonFormatter::formatJson);
 
     public ToolsView() {
         this.setSide(Side.LEFT);
@@ -25,7 +28,8 @@ public class ToolsView extends TabPane {
         this.getStyleClass().add("horizontal-tab-pane");
         Tab urlDecoderTab = createTab("URL Decoder", urlDecoderView);
         Tab unicodeDecoderTab = createTab("Unicode Decoder", unicodeDecoderView);
-        this.getTabs().addAll(urlDecoderTab, unicodeDecoderTab);
+        Tab jsonFormatterTab = createTab("JSON Formatter", jsonFormatterView);
+        this.getTabs().addAll(jsonFormatterTab, unicodeDecoderTab, urlDecoderTab);
     }
 
     public Tab createTab(String labelName, Node content) {
