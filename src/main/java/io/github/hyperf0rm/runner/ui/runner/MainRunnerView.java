@@ -1,4 +1,4 @@
-package io.github.hyperf0rm.runner.ui;
+package io.github.hyperf0rm.runner.ui.runner;
 
 import io.github.hyperf0rm.runner.controller.MainController;
 import io.github.hyperf0rm.runner.model.Request;
@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 
-public class MainView extends BorderPane {
+public class MainRunnerView extends BorderPane {
 
     private final TopBar topBar = new TopBar();
     private final RequestTabsPane requestTabsPane = new RequestTabsPane();
@@ -16,7 +16,7 @@ public class MainView extends BorderPane {
     private final CurlImportWindow curlImportWindow = new CurlImportWindow();
     private final MainController controller = new MainController(this);
 
-    public MainView() {
+    public MainRunnerView() {
         this.topBar.getSendButton().setOnAction(event -> controller.sendRequests());
         this.topBar.getImportCURLButton().setOnAction(event -> {
             Stage stage = (Stage) this.getScene().getWindow();

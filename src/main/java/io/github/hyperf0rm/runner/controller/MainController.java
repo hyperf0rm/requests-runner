@@ -3,7 +3,7 @@ package io.github.hyperf0rm.runner.controller;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.service.RunnerService;
-import io.github.hyperf0rm.runner.ui.MainView;
+import io.github.hyperf0rm.runner.ui.runner.MainRunnerView;
 import io.github.hyperf0rm.runner.util.TemplateEngine;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -13,9 +13,9 @@ import java.util.List;
 public class MainController {
 
     private final RunnerService runnerService = new RunnerService();
-    private final MainView view;
+    private final MainRunnerView view;
 
-    public MainController(MainView view) {
+    public MainController(MainRunnerView view) {
         this.view = view;
     }
 

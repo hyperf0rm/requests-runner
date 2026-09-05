@@ -1,4 +1,4 @@
-package io.github.hyperf0rm.runner.ui;
+package io.github.hyperf0rm.runner.ui.runner;
 
 import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.Result;
