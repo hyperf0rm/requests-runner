@@ -8,14 +8,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 
-public class DecoderEncoderView extends BorderPane {
+public class TransformTextView extends BorderPane {
 
     private final TextArea inputTextArea = new TextArea();
     private final TextArea outputTextArea = new TextArea();
-    private final Button decodeButton = new Button("Decode");
-    private final Button encodeButton = new Button("Encode");
+    private final HBox actionBar = new HBox();
 
-    public DecoderEncoderView(Codec codec) {
+    public TransformTextView(TransformTextAction... actions) {
 
         VBox inputVBox = createVBoxContainer("Input:", inputTextArea, true);
         VBox outputVBox = createVBoxContainer("Output:", outputTextArea, false);
@@ -24,24 +23,30 @@ public class DecoderEncoderView extends BorderPane {
         gridPane.add(inputVBox, 0, 0);
         gridPane.add(outputVBox, 1, 0);
 
-        HBox actionBar = new HBox();
         actionBar.setSpacing(10);
         actionBar.setPadding(new Insets(10, 10, 0, 10));
         actionBar.setAlignment(Pos.CENTER);
-        encodeButton.disableProperty().bind(inputTextArea.textProperty().isEmpty());
-        decodeButton.disableProperty().bind(inputTextArea.textProperty().isEmpty());
-        encodeButton.setOnAction(event -> {
-            String output = codec.encode(inputTextArea.getText());
-            outputTextArea.setText(output);
-        });
-        decodeButton.setOnAction(event -> {
-            String output = codec.decode(inputTextArea.getText());
-            outputTextArea.setText(output);
-        });
-        actionBar.getChildren().addAll(decodeButton, encodeButton);
+
+        for (TransformTextAction action : actions) {
+            Button button = new Button(action.name());
+            button.disableProperty().bind(inputTextArea.textProperty().isEmpty());
+            button.setOnAction(event -> {
+                String output = action.action().apply(inputTextArea.getText());
+                outputTextArea.setText(output);
+            });
+            actionBar.getChildren().add(button);
+        }
+
         setTop(actionBar);
         setCenter(gridPane);
         setMargin(gridPane, new Insets(10));
+    }
+
+    public static TransformTextView ofCodec(Codec codec) {
+        return new TransformTextView(
+                new TransformTextAction("Decode", codec::decode),
+                new TransformTextAction("Encode", codec::encode)
+        );
     }
 
     private VBox createVBoxContainer(String labelName, TextArea textArea, boolean isEditable) {

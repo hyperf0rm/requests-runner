@@ -13,8 +13,8 @@ import javafx.scene.control.TabPane;
 public class ToolsView extends TabPane {
 
     private static final double TAB_WIDTH = 150.0;
-    private final DecoderEncoderView urlDecoderView = new DecoderEncoderView(new UrlCodec());
-    private final DecoderEncoderView unicodeDecoderView = new DecoderEncoderView(new UnicodeCodec());
+    private final TransformTextView urlDecoderView = TransformTextView.ofCodec(new UrlCodec());
+    private final TransformTextView unicodeDecoderView = TransformTextView.ofCodec(new UnicodeCodec());
 
     public ToolsView() {
         this.setSide(Side.LEFT);
