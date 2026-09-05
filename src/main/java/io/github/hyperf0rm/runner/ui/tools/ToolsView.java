@@ -1,5 +1,6 @@
 package io.github.hyperf0rm.runner.ui.tools;
 
+import io.github.hyperf0rm.runner.service.tools.UnicodeCodec;
 import io.github.hyperf0rm.runner.service.tools.UrlCodec;
 import javafx.application.Platform;
 import javafx.geometry.Side;
@@ -13,6 +14,7 @@ public class ToolsView extends TabPane {
 
     private static final double TAB_WIDTH = 150.0;
     private final DecoderEncoderView urlDecoderView = new DecoderEncoderView(new UrlCodec());
+    private final DecoderEncoderView unicodeDecoderView = new DecoderEncoderView(new UnicodeCodec());
 
     public ToolsView() {
         this.setSide(Side.LEFT);
@@ -22,8 +24,8 @@ public class ToolsView extends TabPane {
         this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
         this.getStyleClass().add("horizontal-tab-pane");
         Tab urlDecoderTab = createTab("URL Decoder", urlDecoderView);
-        //Tab unicodeDecoderTab = createTab("Unicode Decoder", urlDecoderView);
-        this.getTabs().addAll(urlDecoderTab);
+        Tab unicodeDecoderTab = createTab("Unicode Decoder", unicodeDecoderView);
+        this.getTabs().addAll(urlDecoderTab, unicodeDecoderTab);
     }
 
     public Tab createTab(String labelName, Node content) {
