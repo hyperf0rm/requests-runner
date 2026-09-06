@@ -1,6 +1,4 @@
-package io.github.hyperf0rm.runner.service.tools;
-
-import io.github.hyperf0rm.runner.util.JsonFormatter;
+package io.github.hyperf0rm.runner.tool;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

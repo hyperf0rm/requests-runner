@@ -3,7 +3,7 @@ package io.github.hyperf0rm.runner.service;
 import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
-import io.github.hyperf0rm.runner.util.JsonFormatter;
+import io.github.hyperf0rm.runner.tool.JsonFormatter;
 
 import java.net.URI;
 import java.net.URISyntaxException;

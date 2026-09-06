@@ -1,6 +1,6 @@
 package io.github.hyperf0rm.runner.ui.tools;
 
-import io.github.hyperf0rm.runner.service.tools.Codec;
+import io.github.hyperf0rm.runner.tool.Codec;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

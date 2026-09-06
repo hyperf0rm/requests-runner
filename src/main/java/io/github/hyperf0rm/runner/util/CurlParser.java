@@ -3,6 +3,7 @@ package io.github.hyperf0rm.runner.util;
 import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
+import io.github.hyperf0rm.runner.tool.JsonFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
