@@ -6,6 +6,7 @@ import tools.jackson.core.json.JsonReadFeature;
 import tools.jackson.core.util.DefaultIndenter;
 import tools.jackson.core.util.DefaultPrettyPrinter;
 import tools.jackson.core.util.Separators;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
@@ -34,5 +35,9 @@ public class JsonFormatter {
         } catch (JacksonException e) {
             return e.getMessage();
         }
+    }
+
+    public static JsonNode toJson(String rawJson) {
+        return MAPPER.readTree(rawJson);
     }
 }

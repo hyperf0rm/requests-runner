@@ -1,5 +1,6 @@
 package io.github.hyperf0rm.runner.ui.tools;
 
+import io.github.hyperf0rm.runner.service.tools.JwtDecoder;
 import io.github.hyperf0rm.runner.service.tools.UnicodeCodec;
 import io.github.hyperf0rm.runner.service.tools.UrlCodec;
 import io.github.hyperf0rm.runner.util.JsonFormatter;
@@ -18,6 +19,8 @@ public class ToolsView extends TabPane {
     private final TransformTextView unicodeDecoderView = TransformTextView.forCodec(new UnicodeCodec());
     private final TransformTextView jsonFormatterView =
             TransformTextView.forSingleAction("Format JSON", JsonFormatter::formatJson);
+    private final TransformTextView jwtDecoderView =
+            TransformTextView.forSingleAction("Decode JWT", JwtDecoder::decode);
 
     public ToolsView() {
         this.setSide(Side.LEFT);
@@ -29,7 +32,8 @@ public class ToolsView extends TabPane {
         Tab urlDecoderTab = createTab("URL Decoder", urlDecoderView);
         Tab unicodeDecoderTab = createTab("Unicode Decoder", unicodeDecoderView);
         Tab jsonFormatterTab = createTab("JSON Formatter", jsonFormatterView);
-        this.getTabs().addAll(jsonFormatterTab, unicodeDecoderTab, urlDecoderTab);
+        Tab jwtFormatterTab = createTab("JWT Decoder", jwtDecoderView);
+        this.getTabs().addAll(jsonFormatterTab, unicodeDecoderTab, urlDecoderTab, jwtFormatterTab);
     }
 
     public Tab createTab(String labelName, Node content) {
