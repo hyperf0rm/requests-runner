@@ -1,9 +1,6 @@
 package io.github.hyperf0rm.runner.ui.tools;
 
-import io.github.hyperf0rm.runner.tool.JwtDecoder;
-import io.github.hyperf0rm.runner.tool.UnicodeCodec;
-import io.github.hyperf0rm.runner.tool.UrlCodec;
-import io.github.hyperf0rm.runner.tool.JsonFormatter;
+import io.github.hyperf0rm.runner.tool.*;
 import javafx.application.Platform;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -21,6 +18,8 @@ public class ToolsView extends TabPane {
             TransformTextView.forSingleAction("Format JSON", JsonFormatter::formatJson);
     private final TransformTextView jwtDecoderView =
             TransformTextView.forSingleAction("Decode JWT", JwtDecoder::decode);
+    private final TransformTextView unixTimestampConverterView =
+            TransformTextView.forSingleAction("Convert", UnixTimestampConverter::convertToUnix);
 
     public ToolsView() {
         this.setSide(Side.LEFT);
@@ -33,7 +32,8 @@ public class ToolsView extends TabPane {
         Tab unicodeDecoderTab = createTab("Unicode Decoder", unicodeDecoderView);
         Tab jsonFormatterTab = createTab("JSON Formatter", jsonFormatterView);
         Tab jwtFormatterTab = createTab("JWT Decoder", jwtDecoderView);
-        this.getTabs().addAll(jsonFormatterTab, unicodeDecoderTab, urlDecoderTab, jwtFormatterTab);
+        Tab unixTimestampConverterTab = createTab("Unix Timestamp Converter", unixTimestampConverterView);
+        this.getTabs().addAll(jsonFormatterTab, unicodeDecoderTab, urlDecoderTab, jwtFormatterTab, unixTimestampConverterTab);
     }
 
     public Tab createTab(String labelName, Node content) {
