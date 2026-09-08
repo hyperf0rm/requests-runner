@@ -1,47 +1,38 @@
 package io.github.hyperf0rm.runner.ui.tools;
 
+import io.github.hyperf0rm.runner.controller.SearchController;
 import io.github.hyperf0rm.runner.tool.Codec;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.StyleClassedTextArea;
 
 import java.util.function.UnaryOperator;
 
 public class TransformTextView extends BorderPane {
 
-    private final TextArea inputTextArea = new TextArea();
-    private final TextArea outputTextArea = new TextArea();
-    private final HBox actionBar = new HBox();
+    private final StyleClassedTextArea inputTextArea = new StyleClassedTextArea();
+    private final StyleClassedTextArea outputTextArea = new StyleClassedTextArea();
+    private final TextField searchField = new TextField();
+    private final HBox searchBar;
+    private final SearchController searchController = new SearchController();
 
     public TransformTextView(TransformTextAction... actions) {
-
-        VBox inputVBox = createVBoxContainer("Input:", inputTextArea, true);
-        VBox outputVBox = createVBoxContainer("Output:", outputTextArea, false);
-
         GridPane gridPane = createGrid();
-        gridPane.add(inputVBox, 0, 0);
-        gridPane.add(outputVBox, 1, 0);
-
-        actionBar.setSpacing(10);
-        actionBar.setPadding(new Insets(10, 10, 0, 10));
-        actionBar.setAlignment(Pos.CENTER);
-
-        for (TransformTextAction action : actions) {
-            Button button = new Button(action.name());
-            button.disableProperty().bind(inputTextArea.textProperty().isEmpty());
-            button.setOnAction(event -> {
-                String output = action.action().apply(inputTextArea.getText());
-                outputTextArea.setText(output);
-            });
-            actionBar.getChildren().add(button);
-        }
-
+        HBox actionBar = createActionBar(actions);
+        this.searchBar = createSearchBar();
+        actionBar.getChildren().add(searchBar);
         setTop(actionBar);
         setCenter(gridPane);
         setMargin(gridPane, new Insets(10));
+        initSearchEventHandlers();
     }
 
     public static TransformTextView forCodec(Codec codec) {
@@ -55,12 +46,34 @@ public class TransformTextView extends BorderPane {
         return new TransformTextView(new TransformTextAction(name, action));
     }
 
-    private VBox createVBoxContainer(String labelName, TextArea textArea, boolean isEditable) {
+    private void initSearchEventHandlers() {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            searchController.search(inputTextArea, newValue);
+        });
+
+        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.F && event.isControlDown()) {
+                searchBar.setVisible(true);
+                searchField.requestFocus();
+            }
+        });
+
+        searchField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                searchController.moveToNextMatch(inputTextArea);
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                searchField.clear();
+                searchBar.setVisible(false);
+            }
+        });
+    }
+
+    private VBox createVBoxContainer(String labelName, VirtualizedScrollPane<StyleClassedTextArea> scrollPane, boolean isEditable) {
         Label label = new Label(labelName);
-        VBox container = new VBox(label, textArea);
-        VBox.setVgrow(textArea, Priority.ALWAYS);
-        textArea.setEditable(isEditable);
-        textArea.setWrapText(true);
+        VBox container = new VBox(label, scrollPane);
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        scrollPane.getContent().setEditable(isEditable);
+        scrollPane.getContent().setWrapText(true);
         return container;
     }
 
@@ -80,7 +93,71 @@ public class TransformTextView extends BorderPane {
         rowConstraints.setVgrow(Priority.ALWAYS);
         gridPane.getRowConstraints().add(rowConstraints);
 
+        inputTextArea.getStyleClass().add("input-text-area");
+        outputTextArea.getStyleClass().add("output-text-area");
+
+        VirtualizedScrollPane<StyleClassedTextArea> inputScrollPane = new VirtualizedScrollPane<>(inputTextArea);
+        VirtualizedScrollPane<StyleClassedTextArea> outputScrollPane = new VirtualizedScrollPane<>(outputTextArea);
+
+        VBox inputVBox = createVBoxContainer("Input:", inputScrollPane, true);
+        VBox outputVBox = createVBoxContainer("Output:", outputScrollPane, false);
+
+        gridPane.add(inputVBox, 0, 0);
+        gridPane.add(outputVBox, 1, 0);
+
         return gridPane;
+    }
+
+    private HBox createActionBar(TransformTextAction... actions) {
+        HBox actionBar = new HBox();
+        actionBar.setSpacing(10);
+        actionBar.setPadding(new Insets(10, 10, 0, 10));
+        actionBar.setAlignment(Pos.CENTER);
+
+        for (TransformTextAction action : actions) {
+            Button button = new Button(action.name());
+            button.disableProperty().bind(
+                    Bindings.createBooleanBinding(
+                            () -> inputTextArea.getLength() == 0,
+                            inputTextArea.lengthProperty()
+                    )
+            );
+            button.setOnAction(event -> {
+                String output = action.action().apply(inputTextArea.getText());
+                outputTextArea.replaceText(output);
+            });
+            actionBar.getChildren().add(button);
+        }
+
+        return actionBar;
+    }
+
+    private HBox createSearchBar() {
+        HBox searchBar = new HBox();
+        searchBar.setVisible(false);
+
+        Button close = new Button("X");
+        close.setOnAction(event -> {
+            searchField.clear();
+            searchBar.setVisible(false);
+        });
+
+        Button previous = new Button("<");
+        previous.setOnAction(event -> {
+            searchController.moveToPreviousMatch(inputTextArea);
+        });
+        previous.disableProperty().bind(searchController.matchesCountProperty().lessThan(2));
+
+        Button next = new Button(">");
+        next.setOnAction(event -> {
+            searchController.moveToNextMatch(inputTextArea);
+        });
+        next.disableProperty().bind(searchController.matchesCountProperty().lessThan(2));
+
+        searchBar.getChildren().addAll(searchField, previous, next, close);
+        searchBar.managedProperty().bind(searchBar.visibleProperty());
+
+        return searchBar;
     }
 
 }

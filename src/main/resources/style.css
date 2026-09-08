@@ -3,9 +3,50 @@
     -fx-padding: 20px;
     -fx-border-width: 1 1 0 1;
     /* tab borders: left top right bottom */
-    -fx-border-color: transparent rgb(30, 34, 44) transparent rgb(30, 34, 44);
+    -fx-border-color: transparent #1e222c transparent #1e222c;
 }
 .horizontal-tab-pane *.tab:selected {
-    -fx-background-color: rgb(74, 88, 140);
-    -fx-border-color: rgb(82, 139, 235) transparent transparent transparent;
+    -fx-background-color: #4a588c;
+    -fx-border-color: #528beb transparent transparent transparent;
+}
+
+.input-text-area:focused,
+.output-text-area:focused {
+    -fx-border-color: #5e81ac
+}
+
+.input-text-area {
+    -fx-background-color: #2e3440;
+    -fx-border-color: #5e6675;
+}
+
+.output-text-area {
+    -fx-background-color: #3b4252;
+    -fx-border-color: #5e6675;
+}
+
+.input-text-area .text,
+.output-text-area .text {
+    -fx-fill: #eceff4;
+}
+
+.input-text-area .caret,
+.output-text-area .caret {
+    -fx-stroke: #eceff4;
+}
+
+.input-text-area .search-highlight,
+.output-text-area .search-highlight {
+    -fx-fill: black;
+    -rtfx-background-color: yellow;
+}
+
+.input-text-area .search-highlight-active,
+.output-text-area .search-highlight-active {
+    -fx-fill: black;
+    -rtfx-background-color: orange;
+}
+
+.styled-text-area {
+    -fx-padding: 12px;
 }
