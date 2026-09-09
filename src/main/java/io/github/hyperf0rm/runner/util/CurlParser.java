@@ -68,6 +68,7 @@ public class CurlParser {
 
         if (bodyMatcher.find()) {
             body = bodyMatcher.group(1);
+            body = body.replace("'\\''", "'").replace("\\'", "'");
         }
         return JsonFormatter.formatJson(body);
     }
