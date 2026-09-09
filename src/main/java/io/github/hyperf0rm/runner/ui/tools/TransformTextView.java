@@ -131,6 +131,7 @@ public class TransformTextView extends BorderPane {
                 outputTextArea.replaceText(output);
                 searchField.clear();
             });
+            button.setFocusTraversable(false);
             actionBar.getChildren().add(button);
         }
 
@@ -161,12 +162,14 @@ public class TransformTextView extends BorderPane {
             searchController.moveToPreviousMatch();
         });
         previous.disableProperty().bind(searchController.matchesCountProperty().lessThan(2));
+        previous.setFocusTraversable(false);
 
         Button next = new Button(">");
         next.setOnAction(event -> {
             searchController.moveToNextMatch();
         });
         next.disableProperty().bind(searchController.matchesCountProperty().lessThan(2));
+        next.setFocusTraversable(false);
 
         searchBar.getChildren().addAll(searchField, previous, next, close);
         searchBar.managedProperty().bind(searchBar.visibleProperty());
