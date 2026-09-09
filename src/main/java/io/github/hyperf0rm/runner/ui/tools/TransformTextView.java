@@ -24,6 +24,7 @@ public class TransformTextView extends BorderPane {
     private final List<StyleClassedTextArea> textAreas = List.of(inputTextArea, outputTextArea);;
     private final TextField searchField = new TextField();
     private final HBox searchBar;
+    private final Button searchButton = new Button("Search");
     private final SearchController searchController = new SearchController();
 
     public TransformTextView(TransformTextAction... actions) {
@@ -57,6 +58,7 @@ public class TransformTextView extends BorderPane {
             if (event.getCode() == KeyCode.F && event.isControlDown()) {
                 searchBar.setVisible(true);
                 searchField.requestFocus();
+                searchButton.setVisible(false);
             }
         });
 
@@ -66,6 +68,7 @@ public class TransformTextView extends BorderPane {
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 searchField.clear();
                 searchBar.setVisible(false);
+                searchButton.setVisible(true);
             }
         });
     }
@@ -131,6 +134,14 @@ public class TransformTextView extends BorderPane {
             actionBar.getChildren().add(button);
         }
 
+        searchButton.setOnAction(event -> {
+            searchBar.setVisible(true);
+            searchField.requestFocus();
+            searchButton.setVisible(false);
+        });
+        searchButton.managedProperty().bind(searchButton.visibleProperty());
+        actionBar.getChildren().add(searchButton);
+
         return actionBar;
     }
 
@@ -142,6 +153,7 @@ public class TransformTextView extends BorderPane {
         close.setOnAction(event -> {
             searchField.clear();
             searchBar.setVisible(false);
+            searchButton.setVisible(true);
         });
 
         Button previous = new Button("<");
