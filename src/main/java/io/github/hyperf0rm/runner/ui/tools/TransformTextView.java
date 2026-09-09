@@ -21,11 +21,11 @@ public class TransformTextView extends BorderPane {
 
     private final StyleClassedTextArea inputTextArea = new StyleClassedTextArea();
     private final StyleClassedTextArea outputTextArea = new StyleClassedTextArea();
-    private final List<StyleClassedTextArea> textAreas = List.of(inputTextArea, outputTextArea);;
-    private final TextField searchField = new TextField();
-    private final HBox searchBar = createSearchBar();;
-    private final Button searchButton = new Button("Search");
+    private final List<StyleClassedTextArea> textAreas = List.of(inputTextArea, outputTextArea);
     private final SearchController searchController = new SearchController();
+    private final TextField searchField = new TextField();
+    private final HBox searchBar = createSearchBar();
+    private final Button searchButton = new Button("Search");
 
     public TransformTextView(TransformTextAction... actions) {
         GridPane gridPane = createGrid();
