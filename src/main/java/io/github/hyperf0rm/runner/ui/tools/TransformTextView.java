@@ -14,12 +14,14 @@ import javafx.scene.layout.*;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.StyleClassedTextArea;
 
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class TransformTextView extends BorderPane {
 
     private final StyleClassedTextArea inputTextArea = new StyleClassedTextArea();
     private final StyleClassedTextArea outputTextArea = new StyleClassedTextArea();
+    private final List<StyleClassedTextArea> textAreas = List.of(inputTextArea, outputTextArea);;
     private final TextField searchField = new TextField();
     private final HBox searchBar;
     private final SearchController searchController = new SearchController();
@@ -48,7 +50,7 @@ public class TransformTextView extends BorderPane {
 
     private void initSearchEventHandlers() {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchController.search(inputTextArea, newValue);
+            searchController.search(textAreas, newValue);
         });
 
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -60,7 +62,7 @@ public class TransformTextView extends BorderPane {
 
         searchField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                searchController.moveToNextMatch(inputTextArea);
+                searchController.moveToNextMatch();
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 searchField.clear();
                 searchBar.setVisible(false);
@@ -144,13 +146,13 @@ public class TransformTextView extends BorderPane {
 
         Button previous = new Button("<");
         previous.setOnAction(event -> {
-            searchController.moveToPreviousMatch(inputTextArea);
+            searchController.moveToPreviousMatch();
         });
         previous.disableProperty().bind(searchController.matchesCountProperty().lessThan(2));
 
         Button next = new Button(">");
         next.setOnAction(event -> {
-            searchController.moveToNextMatch(inputTextArea);
+            searchController.moveToNextMatch();
         });
         next.disableProperty().bind(searchController.matchesCountProperty().lessThan(2));
 
