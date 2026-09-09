@@ -11,23 +11,19 @@ import javafx.scene.layout.Priority;
 
 public class TopBar extends HBox {
 
-    private final ChoiceBox<HttpMethod> methodChoiceBox;
-    private final TextField urlTextField;
-    private final Button sendButton;
-    private final Button importCURLButton;
+    private final ChoiceBox<HttpMethod> methodChoiceBox = createMethodChoiceBox();
+    private final TextField urlTextField = createUrlTextField();
+    private final Button sendButton = new Button("Send");
+    private final Button importCURLButton = new Button("Import cURL");
     private final Button cancelButton = new Button("Cancel");
 
     public TopBar() {
         super(8);
-        this.methodChoiceBox = createMethodChoiceBox();
-        this.urlTextField = createUrlTextField();
         this.urlTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && !newValue.isBlank()) {
                 removeUrlError();
             }
         });
-        this.sendButton = new Button("Send");
-        this.importCURLButton = new Button("Import cURL");
         this.cancelButton.setDisable(true);
         this.getChildren().addAll(importCURLButton, methodChoiceBox, urlTextField, sendButton, cancelButton);
         this.setPadding(new Insets(10));

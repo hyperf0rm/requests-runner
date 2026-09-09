@@ -14,12 +14,11 @@ import java.util.*;
 
 public class ExecutionPanel extends VBox {
 
-    private final TextArea valuesTextArea;
+    private final TextArea valuesTextArea = new TextArea();
     private final Accordion resultsAccordion = new Accordion();
 
     public ExecutionPanel(double spacing) {
         super(spacing);
-        this.valuesTextArea = new TextArea();
         this.valuesTextArea.setPrefHeight(150);
         this.valuesTextArea.setMinHeight(Region.USE_PREF_SIZE);
         this.getChildren().addAll(new Label("Enter values:"), this.valuesTextArea);

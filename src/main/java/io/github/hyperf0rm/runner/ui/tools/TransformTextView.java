@@ -23,14 +23,13 @@ public class TransformTextView extends BorderPane {
     private final StyleClassedTextArea outputTextArea = new StyleClassedTextArea();
     private final List<StyleClassedTextArea> textAreas = List.of(inputTextArea, outputTextArea);;
     private final TextField searchField = new TextField();
-    private final HBox searchBar;
+    private final HBox searchBar = createSearchBar();;
     private final Button searchButton = new Button("Search");
     private final SearchController searchController = new SearchController();
 
     public TransformTextView(TransformTextAction... actions) {
         GridPane gridPane = createGrid();
         HBox actionBar = createActionBar(actions);
-        this.searchBar = createSearchBar();
         actionBar.getChildren().add(searchBar);
         setTop(actionBar);
         setCenter(gridPane);
