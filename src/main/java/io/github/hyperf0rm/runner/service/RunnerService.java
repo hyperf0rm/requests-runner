@@ -30,6 +30,11 @@ public class RunnerService {
         int id = 1;
 
         for (Request request : requests) {
+
+            if (Thread.currentThread().isInterrupted()) {
+                break;
+            }
+
             long start = System.nanoTime();
             Result result = new Result();
             try {
@@ -47,7 +52,11 @@ public class RunnerService {
                     processedHeaders.add(new Header(header.getKey(), value));
                 }
                 result.setResponseHeaders(processedHeaders);
-            } catch (Exception e){
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                result.setError("Request cancelled");
+                break;
+            } catch (Exception e) {
                 result.setError(e.getMessage());
             } finally {
                 long duration = Duration.ofNanos(System.nanoTime() - start).toMillis();

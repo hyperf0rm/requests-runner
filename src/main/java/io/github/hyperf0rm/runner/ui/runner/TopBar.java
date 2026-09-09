@@ -15,6 +15,7 @@ public class TopBar extends HBox {
     private final TextField urlTextField;
     private final Button sendButton;
     private final Button importCURLButton;
+    private final Button cancelButton = new Button("Cancel");
 
     public TopBar() {
         super(8);
@@ -27,7 +28,8 @@ public class TopBar extends HBox {
         });
         this.sendButton = new Button("Send");
         this.importCURLButton = new Button("Import cURL");
-        this.getChildren().addAll(importCURLButton, methodChoiceBox, urlTextField, sendButton);
+        this.cancelButton.setDisable(true);
+        this.getChildren().addAll(importCURLButton, methodChoiceBox, urlTextField, sendButton, cancelButton);
         this.setPadding(new Insets(10));
         HBox.setHgrow(this.urlTextField, Priority.ALWAYS);
     }
@@ -75,6 +77,10 @@ public class TopBar extends HBox {
 
     public void setMethod(HttpMethod method) {
         methodChoiceBox.setValue(method);
+    }
+
+    public Button getCancelButton() {
+        return cancelButton;
     }
 
     public TextField getUrlTextField() {

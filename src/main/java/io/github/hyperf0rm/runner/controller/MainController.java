@@ -14,6 +14,7 @@ public class MainController {
 
     private final RunnerService runnerService = new RunnerService();
     private final MainRunnerView view;
+    private Task<List<Result>> runTask;
 
     public MainController(MainRunnerView view) {
         this.view = view;
@@ -41,8 +42,9 @@ public class MainController {
 
         view.getExecutionPanel().clearResults();
         view.getTopBar().getSendButton().setDisable(true);
+        view.getTopBar().getCancelButton().setDisable(false);
 
-        Task<List<Result>> runTask = new Task<>() {
+        runTask = new Task<>() {
             @Override
             protected List<Result> call() {
                 return runnerService.run(requests, result -> {
@@ -53,11 +55,25 @@ public class MainController {
             }
         };
 
-        runTask.setOnSucceeded(event -> view.getTopBar().getSendButton().setDisable(false));
-        runTask.setOnFailed(event -> view.getTopBar().getSendButton().setDisable(false));
+        runTask.setOnCancelled(event -> {
+            view.getTopBar().getSendButton().setDisable(false);
+            view.getTopBar().getCancelButton().setDisable(true);
+        });
+        runTask.setOnSucceeded(event -> {
+            view.getTopBar().getSendButton().setDisable(false);
+            view.getTopBar().getCancelButton().setDisable(true);
+        });
+        runTask.setOnFailed(event -> {
+            view.getTopBar().getSendButton().setDisable(false);
+            view.getTopBar().getCancelButton().setDisable(true);
+        });
 
         Thread thread = new Thread(runTask);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    public void cancel() {
+        runTask.cancel(true);
     }
 }

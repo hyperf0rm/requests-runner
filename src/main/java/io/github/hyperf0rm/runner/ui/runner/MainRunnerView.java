@@ -22,6 +22,7 @@ public class MainRunnerView extends BorderPane {
             Stage stage = (Stage) this.getScene().getWindow();
             curlImportWindow.show(stage, this::applyParsedRequestToUI);
         });
+        this.topBar.getCancelButton().setOnAction(event -> controller.cancel());
 
         SplitPane splitPane = new SplitPane(requestTabsPane, executionPanel);
         splitPane.setDividerPositions(0.5);
