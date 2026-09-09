@@ -2,15 +2,14 @@ package io.github.hyperf0rm.runner.ui.runner;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 
 public class RunnerTabPane extends TabPane {
 
+    private final Tab buttonTab = new Tab();
+
     public RunnerTabPane() {
         Tab tab = createRequestTab();
-        Tab buttonTab = new Tab();
         buttonTab.getStyleClass().add("new-tab-button");
         buttonTab.setClosable(false);
         Button newTabButton = new Button("+");
@@ -30,16 +29,79 @@ public class RunnerTabPane extends TabPane {
         this.getTabs().addAll(tab, buttonTab);
     }
 
-    public Tab createRequestTab() {
+    private Tab createRequestTab() {
+        return createRequestTab(new MainRunnerView());
+    }
+
+    private Tab createRequestTab(MainRunnerView view) {
         Tab tab = new Tab();
-        MainRunnerView view = new MainRunnerView();
+        ContextMenu contextMenu = createContextMenu(tab);
+        tab.setContextMenu(contextMenu);
         tab.setContent(view);
         tab.textProperty().bind(Bindings.createStringBinding(() -> {
             String method = view.getTopBar().getMethod().toString();
             String url = (!view.getTopBar().getUrl().isBlank()) ? view.getTopBar().getUrl() : "Request";
-            return method + " " + url;
+            return method + " " + url.trim();
         }, view.getTopBar().getMethodChoiceBox().valueProperty(), view.getTopBar().getUrlTextField().textProperty()));
 
         return tab;
+    }
+
+    private ContextMenu createContextMenu(Tab tab) {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem newRequest = new MenuItem("New Request");
+        newRequest.setOnAction(event -> {
+            Tab newTab = createRequestTab();
+            int index = this.getTabs().indexOf(tab) + 1;
+            this.getTabs().add(index, newTab);
+            this.getSelectionModel().select(newTab);
+        });
+
+        MenuItem duplicateTab = new MenuItem("Duplicate Tab");
+        duplicateTab.setOnAction(event -> {
+            MainRunnerView view = (MainRunnerView) tab.getContent();
+            Tab newTab = createRequestTab(view.duplicate());
+            int index = this.getTabs().indexOf(tab) + 1;
+            this.getTabs().add(index, newTab);
+            this.getSelectionModel().select(newTab);
+        });
+
+        MenuItem closeTab = new MenuItem("Close Tab");
+        closeTab.setOnAction(event -> {
+            this.getTabs().remove(tab);
+        });
+
+        MenuItem closeOtherTabs = new MenuItem("Close Other Tabs");
+        closeOtherTabs.setOnAction(event -> {
+            this.getTabs().removeIf(
+                    currentTab -> currentTab != tab
+                            && currentTab != buttonTab);
+        });
+
+        MenuItem closeTabsToTheRight = new MenuItem("Close Tabs To The Right");
+        closeTabsToTheRight.setOnAction(event -> {
+            this.getTabs().removeIf(
+                    currentTab -> this.getTabs().indexOf(currentTab) > this.getTabs().indexOf(tab)
+                            && currentTab != buttonTab);
+        });
+
+        MenuItem closeTabsToTheLeft = new MenuItem("Close Tabs To The Left");
+        closeTabsToTheLeft.setOnAction(event -> {
+            this.getTabs().removeIf(
+                    currentTab -> this.getTabs().indexOf(currentTab) < this.getTabs().indexOf(tab)
+            );
+        });
+
+        contextMenu.getItems().addAll(
+                newRequest,
+                duplicateTab,
+                closeTab,
+                closeOtherTabs,
+                closeTabsToTheRight,
+                closeTabsToTheLeft
+        );
+
+        return contextMenu;
     }
 }

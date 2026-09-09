@@ -35,6 +35,15 @@ public class MainRunnerView extends BorderPane {
         setMargin(splitPane, new Insets(10));
     }
 
+    public MainRunnerView duplicate() {
+        MainRunnerView duplicate = new MainRunnerView();
+        duplicate.getTopBar().getMethodChoiceBox().setValue(this.getTopBar().getMethod());
+        duplicate.getTopBar().getUrlTextField().setText(this.getTopBar().getUrl());
+        duplicate.getRequestTabsPane().setBody(this.getRequestTabsPane().getBody());
+        duplicate.getRequestTabsPane().setHeaders(this.getRequestTabsPane().getHeaders());
+        return duplicate;
+    }
+
     private void applyParsedRequestToUI(Request request) {
         topBar.setUrl(request.url());
         topBar.setMethod(request.method());
