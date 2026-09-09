@@ -2,6 +2,7 @@ package io.github.hyperf0rm.runner.ui.runner;
 
 import io.github.hyperf0rm.runner.controller.MainController;
 import io.github.hyperf0rm.runner.model.Request;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
@@ -25,9 +26,9 @@ public class MainRunnerView extends BorderPane {
         this.topBar.getCancelButton().setOnAction(event -> controller.cancel());
 
         SplitPane splitPane = new SplitPane(requestTabsPane, executionPanel);
-        splitPane.setDividerPositions(0.5);
-        SplitPane.setResizableWithParent(requestTabsPane, true);
-        SplitPane.setResizableWithParent(executionPanel, false);
+        Platform.runLater(() -> {
+            splitPane.setDividerPositions(0.65);
+        });
 
         setTop(topBar);
         setCenter(splitPane);

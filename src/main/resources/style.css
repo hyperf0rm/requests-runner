@@ -50,3 +50,7 @@
 .styled-text-area {
     -fx-padding: 12px;
 }
+
+.new-tab-button {
+    -fx-background-color: transparent;
+}

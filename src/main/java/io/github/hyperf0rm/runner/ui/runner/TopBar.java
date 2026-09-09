@@ -82,4 +82,8 @@ public class TopBar extends HBox {
     public TextField getUrlTextField() {
         return urlTextField;
     }
+
+    public ChoiceBox<HttpMethod> getMethodChoiceBox() {
+        return methodChoiceBox;
+    }
 }
