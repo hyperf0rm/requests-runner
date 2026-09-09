@@ -20,8 +20,14 @@ public class CurlParser {
     private CurlParser() {}
 
     public static Request parse(String curl) {
+        HttpMethod httpMethod = getHttpMethod(curl);
+        String url = getUrl(curl);
+        List<Header> headers = getHeaders(curl);
+        String body = getBody(curl);
+        return new Request(httpMethod, url, headers, body);
+    }
 
-        // method
+    private static HttpMethod getHttpMethod(String curl) {
         Matcher methodMatcher = METHOD_TEMPLATE.matcher(curl);
         String method;
         if (methodMatcher.find()) {
@@ -33,16 +39,19 @@ public class CurlParser {
                 method = "GET";
             }
         }
-        HttpMethod httpMethod = HttpMethod.fromString(method);
+        return HttpMethod.fromString(method);
+    }
 
-        // url
+    private static String getUrl(String curl) {
         Matcher urlMatcher = URL_TEMPLATE.matcher(curl);
         String url = "";
         if (urlMatcher.find()) {
             url = urlMatcher.group(1);
         }
+        return url;
+    }
 
-        // headers
+    private static List<Header> getHeaders(String curl) {
         Matcher headersMatcher = HEADER_TEMPLATE.matcher(curl);
         List<Header> headers = new ArrayList<>();
         while (headersMatcher.find()) {
@@ -50,18 +59,17 @@ public class CurlParser {
             String[] parts = header.split(":\\s*", 2);
             headers.add(new Header(parts[0], parts[1]));
         }
+        return headers;
+    }
 
-        // body
+    private static String getBody(String curl) {
         Matcher bodyMatcher = BODY_TEMPLATE.matcher(curl);
         String body = "";
 
         if (bodyMatcher.find()) {
             body = bodyMatcher.group(1);
         }
-
-        body = JsonFormatter.formatJson(body);
-
-        return new Request(httpMethod, url, headers, body);
+        return JsonFormatter.formatJson(body);
     }
 
 }
