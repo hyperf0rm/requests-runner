@@ -129,6 +129,7 @@ public class TransformTextView extends BorderPane {
             button.setOnAction(event -> {
                 String output = action.action().apply(inputTextArea.getText());
                 outputTextArea.replaceText(output);
+                searchField.clear();
             });
             actionBar.getChildren().add(button);
         }
