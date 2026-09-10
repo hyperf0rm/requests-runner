@@ -72,12 +72,18 @@ public class RunnerTabPane extends TabPane {
             this.getTabs().remove(tab);
         });
 
+        MenuItem closeAllTabs = new MenuItem("Close All Tabs");
+        closeAllTabs.setOnAction(event -> {
+            this.getTabs().removeIf(currentTab -> currentTab != buttonTab);
+        });
+
         MenuItem closeOtherTabs = new MenuItem("Close Other Tabs");
         closeOtherTabs.setOnAction(event -> {
             this.getTabs().removeIf(
                     currentTab -> currentTab != tab
                             && currentTab != buttonTab);
         });
+        closeOtherTabs.disableProperty().bind(Bindings.size(this.getTabs()).lessThanOrEqualTo(2));
 
         MenuItem closeTabsToTheRight = new MenuItem("Close Tabs To The Right");
         closeTabsToTheRight.setOnAction(event -> {
@@ -85,6 +91,10 @@ public class RunnerTabPane extends TabPane {
                     currentTab -> this.getTabs().indexOf(currentTab) > this.getTabs().indexOf(tab)
                             && currentTab != buttonTab);
         });
+        closeTabsToTheRight.disableProperty().bind(
+                Bindings.createBooleanBinding(
+                        () -> this.getTabs().indexOf(tab) >= this.getTabs().size() - 2,
+                        this.getTabs()));
 
         MenuItem closeTabsToTheLeft = new MenuItem("Close Tabs To The Left");
         closeTabsToTheLeft.setOnAction(event -> {
@@ -92,11 +102,17 @@ public class RunnerTabPane extends TabPane {
                     currentTab -> this.getTabs().indexOf(currentTab) < this.getTabs().indexOf(tab)
             );
         });
+        closeTabsToTheLeft.disableProperty().bind(
+                Bindings.createBooleanBinding(
+                        () -> this.getTabs().indexOf(tab) <= 0,
+                        this.getTabs()));
+
 
         contextMenu.getItems().addAll(
                 newRequest,
                 duplicateTab,
                 closeTab,
+                closeAllTabs,
                 closeOtherTabs,
                 closeTabsToTheRight,
                 closeTabsToTheLeft
