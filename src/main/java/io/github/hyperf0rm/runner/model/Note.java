@@ -2,20 +2,20 @@ package io.github.hyperf0rm.runner.model;
 
 public class Note {
 
-    private String name;
+    private String title;
     private String text;
 
-    public Note(String name, String text) {
-        this.name = name;
+    public Note(String title, String text) {
+        this.title = title;
         this.text = text;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String name) {
+        this.title = name;
     }
 
     public String getText() {
@@ -28,6 +28,6 @@ public class Note {
 
     @Override
     public String toString() {
-        return name;
+        return title;
     }
 }
