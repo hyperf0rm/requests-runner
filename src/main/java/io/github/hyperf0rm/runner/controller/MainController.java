@@ -21,14 +21,27 @@ public class MainController {
     }
 
     public void sendRequests() {
+        int errors = 0;
 
         String url = view.getTopBar().getUrl();
+        long delay = 0L;
+
+        try {
+            delay = Long.parseLong(view.getExecutionPanel().getDelay());
+            if (delay < 0) throw new IllegalArgumentException();
+        } catch (Exception e) {
+            view.getExecutionPanel().setDelayError();
+            errors++;
+        }
 
         if (url == null || url.isBlank()) {
             view.getTopBar().setUrlError();
-            return;
+            errors++;
         }
 
+        if (errors > 0) return;
+
+        final long finalDelay = delay;
         String normalizedUrl = runnerService.normalizeUrl(url);
 
         Request request = new Request(
@@ -47,7 +60,7 @@ public class MainController {
         runTask = new Task<>() {
             @Override
             protected List<Result> call() {
-                return runnerService.run(requests, result -> {
+                return runnerService.run(requests, finalDelay, result -> {
                     Platform.runLater(() -> {
                         view.getExecutionPanel().addSingleResult(result);
                     });

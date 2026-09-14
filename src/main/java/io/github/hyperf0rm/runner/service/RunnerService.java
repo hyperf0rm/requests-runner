@@ -24,7 +24,7 @@ public class RunnerService {
         this.client =  HttpClient.newHttpClient();
     }
 
-    public List<Result> run(List<Request> requests, Consumer<Result> onResult) {
+    public List<Result> run(List<Request> requests, long delay, Consumer<Result> onResult) {
 
         List<Result> results = new ArrayList<>();
         int id = 1;
@@ -75,7 +75,7 @@ public class RunnerService {
 
             if (id < requests.size()) {
                 try {
-                    Thread.sleep(1000L);
+                    Thread.sleep(delay * 1000L);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;

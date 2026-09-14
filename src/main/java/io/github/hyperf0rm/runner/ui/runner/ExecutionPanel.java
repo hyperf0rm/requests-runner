@@ -3,6 +3,7 @@ package io.github.hyperf0rm.runner.ui.runner;
 import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.Result;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -16,12 +17,14 @@ public class ExecutionPanel extends VBox {
 
     private final TextArea valuesTextArea = new TextArea();
     private final Accordion resultsAccordion = new Accordion();
+    private final TextField delayTextField = new TextField();
 
     public ExecutionPanel(double spacing) {
         super(spacing);
         this.valuesTextArea.setPrefHeight(150);
         this.valuesTextArea.setMinHeight(Region.USE_PREF_SIZE);
-        this.getChildren().addAll(new Label("Enter values:"), this.valuesTextArea);
+        HBox mainHBox = createExecutionHbox();
+        this.getChildren().addAll(mainHBox, this.valuesTextArea);
         this.setPadding(new Insets(10));
         VBox.setVgrow(this.valuesTextArea, Priority.NEVER);
 
@@ -83,6 +86,19 @@ public class ExecutionPanel extends VBox {
         resultsAccordion.getPanes().clear();
     }
 
+    public String getDelay() {
+        return delayTextField.getText();
+    }
+
+    public void setDelayError() {
+        delayTextField.setStyle("-fx-border-color: #e74c3c;");
+        delayTextField.requestFocus();
+    }
+
+    public void removeDelayError() {
+        delayTextField.setStyle("");
+    }
+
     private TabPane createResultTabs(Result result) {
         return new TabPane(
                 createHeadersTab("Headers", result.getHeaders()),
@@ -106,5 +122,23 @@ public class ExecutionPanel extends VBox {
         Tab bodyTab = new Tab(label, textArea);
         bodyTab.setClosable(false);
         return bodyTab;
+    }
+
+    private HBox createExecutionHbox() {
+        HBox delayHBox = new HBox();
+        delayHBox.setAlignment(Pos.BASELINE_LEFT);
+        delayHBox.getChildren().addAll(new Label("Delay (seconds): "), delayTextField);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        delayTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.isEmpty()) {
+                removeDelayError();
+            }
+        });
+
+        HBox mainHBox = new HBox();
+        mainHBox.setAlignment(Pos.BASELINE_LEFT);
+        mainHBox.getChildren().addAll(new Label("Enter Values:"), spacer, delayHBox);
+        return mainHBox;
     }
 }
