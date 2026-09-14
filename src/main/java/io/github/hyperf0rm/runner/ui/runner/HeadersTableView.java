@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,14 @@ public class HeadersTableView extends TableView<Header> {
         this.getColumns().add(keyColumn);
         this.getColumns().add(valueColumn);
         setHeaders(headers);
+        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.DELETE) {
+                Header header = this.getSelectionModel().getSelectedItem();
+                if (header != null) {
+                    this.getItems().remove(header);
+                }
+            }
+        });
     }
 
     public void setHeaders(List<Header> headers) {
