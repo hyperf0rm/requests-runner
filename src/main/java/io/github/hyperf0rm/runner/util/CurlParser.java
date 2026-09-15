@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 public class CurlParser {
 
     private static final Pattern METHOD_TEMPLATE = Pattern.compile("(?:--request|-X)\\s+([A-Za-z]+)");;
-    private static final Pattern URL_TEMPLATE = Pattern.compile("'(https?://[^'\"\\s]+)'");
-    private static final Pattern HEADER_TEMPLATE = Pattern.compile("(?:--header|-H)\\s+'(.+)'");
+    private static final Pattern URL_TEMPLATE = Pattern.compile("(?:--url\\s+)?(?:\\^?['\"])?(https?://[^\\s\"'^]+)");
+    private static final Pattern HEADER_TEMPLATE = Pattern.compile("(?:--header|-H)\\s+\\^?['\"](.+?)\\^?['\"](?:\\s|$)");
     private static final Pattern BODY_TEMPLATE = Pattern.compile("(?:--data|-d|--data-raw|--data-binary|--data-urlencode)\\s+'(.+)'", Pattern.DOTALL);
 
     private CurlParser() {}
