@@ -12,10 +12,20 @@ import java.util.regex.Pattern;
 
 public class CurlParser {
 
-    private static final Pattern METHOD_TEMPLATE = Pattern.compile("(?:--request|-X)\\s+([A-Za-z]+)");;
-    private static final Pattern URL_TEMPLATE = Pattern.compile("(?:--url\\s+)?(?:\\^?['\"])?(https?://[^\\s\"'^]+)");
-    private static final Pattern HEADER_TEMPLATE = Pattern.compile("(?:--header|-H)\\s+\\^?['\"](.+?)\\^?['\"](?:\\s|$)");
-    private static final Pattern BODY_TEMPLATE = Pattern.compile("(?:--data|-d|--data-raw|--data-binary|--data-urlencode)\\s+'(.+)'", Pattern.DOTALL);
+    private static final Pattern METHOD_PATTERN = Pattern.compile(
+            "(?:--request|-X)\\s+([A-Za-z]+)"
+    );;
+    private static final Pattern URL_PATTERN = Pattern.compile(
+            "(?:--url\\s+)?(?:\\^?['\"])?(https?://[^\\s\"'^]+)"
+    );
+    private static final Pattern HEADER_PATTERN = Pattern.compile(
+            "(?:--header|-H)\\s+\\^?['\"](.+?)\\^?['\"](?:\\s|$)"
+    );
+    private static final Pattern BODY_PATTERN = Pattern.compile(
+            "(?:--data|-d|--data-raw|--data-binary|--data-urlencode)\\s+" +
+                    "(?:\\^?['\"])((?s).+?)(?:\\^?['\"])(?:\\s+(?:--|-X|$)|\n|\r|$)",
+            Pattern.DOTALL
+    );
 
     private CurlParser() {}
 
@@ -28,7 +38,7 @@ public class CurlParser {
     }
 
     private static HttpMethod getHttpMethod(String curl) {
-        Matcher methodMatcher = METHOD_TEMPLATE.matcher(curl);
+        Matcher methodMatcher = METHOD_PATTERN.matcher(curl);
         String method;
         if (methodMatcher.find()) {
             method = methodMatcher.group(1);
@@ -43,7 +53,7 @@ public class CurlParser {
     }
 
     private static String getUrl(String curl) {
-        Matcher urlMatcher = URL_TEMPLATE.matcher(curl);
+        Matcher urlMatcher = URL_PATTERN.matcher(curl);
         String url = "";
         if (urlMatcher.find()) {
             url = urlMatcher.group(1);
@@ -52,7 +62,7 @@ public class CurlParser {
     }
 
     private static List<Header> getHeaders(String curl) {
-        Matcher headersMatcher = HEADER_TEMPLATE.matcher(curl);
+        Matcher headersMatcher = HEADER_PATTERN.matcher(curl);
         List<Header> headers = new ArrayList<>();
         while (headersMatcher.find()) {
             String header = headersMatcher.group(1);
@@ -63,12 +73,24 @@ public class CurlParser {
     }
 
     private static String getBody(String curl) {
-        Matcher bodyMatcher = BODY_TEMPLATE.matcher(curl);
+        Matcher bodyMatcher = BODY_PATTERN.matcher(curl);
         String body = "";
 
         if (bodyMatcher.find()) {
             body = bodyMatcher.group(1);
             body = body.replace("'\\''", "'").replace("\\'", "'");
+
+            body = body.replace("^\\^\"", "\"")
+                    .replace("\\^\"", "\"")
+                    .replace("^\"", "\"")
+                    .replace("\\\"", "\"");
+
+            body = body.replace("^{", "{")
+                    .replace("^}", "}")
+                    .replace("^[", "[")
+                    .replace("^]", "]");
+
+            body = body.replace("^", "");
         }
         return JsonFormatter.formatJson(body);
     }
