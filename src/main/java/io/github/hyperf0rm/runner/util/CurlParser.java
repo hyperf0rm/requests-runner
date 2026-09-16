@@ -4,6 +4,7 @@ import io.github.hyperf0rm.runner.model.Header;
 import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.tool.JsonFormatter;
+import io.github.hyperf0rm.runner.tool.UrlCodec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,13 @@ public class CurlParser {
     );
     private static final Pattern BODY_PATTERN = Pattern.compile(
             "(?:--data|-d|--data-raw|--data-binary|--data-urlencode)\\s+" +
-                    "(?:\\^?['\"])((?s).+?)(?:\\^?['\"])(?:\\s+(?:--|-X|$)|\n|\r|$)",
+                    "\\^?(['\"])((?s).*?)\\^?\\1(?:\\s+(?:--|-X|$)|\n|\r|$)",
             Pattern.DOTALL
     );
+    private static final Pattern FORM_DATA_BODY_PATTERN = Pattern.compile(
+            "(?:--data|-d|--data-raw|--data-binary|--data-urlencode)\\s+\\^?(['\"])((?s).*?)\\^?\\1"
+    );
+    private static final UrlCodec urlCodec = new UrlCodec();
 
     private CurlParser() {}
 
@@ -33,7 +38,7 @@ public class CurlParser {
         HttpMethod httpMethod = getHttpMethod(curl);
         String url = getUrl(curl);
         List<Header> headers = getHeaders(curl);
-        String body = getBody(curl);
+        String body = getBody(curl, headers);
         return new Request(httpMethod, url, headers, body);
     }
 
@@ -72,28 +77,55 @@ public class CurlParser {
         return headers;
     }
 
-    private static String getBody(String curl) {
+    private static String getBody(String curl, List<Header> headers) {
+        boolean hasFormHeader = headers.stream()
+                .anyMatch(h -> h.getValue().toLowerCase().contains("application/x-www-form-urlencoded"));
+        boolean isUrlEncoded = hasFormHeader || curl.contains("--data-urlencode");
+
+        if (isUrlEncoded) {
+            Matcher matcher = FORM_DATA_BODY_PATTERN.matcher(curl);
+
+            List<String> finalData = new ArrayList<>();
+            while (matcher.find()) {
+                String flag = matcher.group(0).trim();
+
+                if (flag.startsWith("--data-urlencode")) {
+                    String[] parts = matcher.group(2).split("=", 2);
+                    String key = urlCodec.encode(parts[0]);
+                    String value = parts.length > 1 ? urlCodec.encode(parts[1]) : "";
+                    finalData.add(key + "=" + value);
+                } else {
+                    finalData.add(matcher.group(2));
+                }
+            }
+            return String.join("&", finalData);
+        }
+
         Matcher bodyMatcher = BODY_PATTERN.matcher(curl);
         String body = "";
 
         if (bodyMatcher.find()) {
-            body = bodyMatcher.group(1);
-            body = body.replace("'\\''", "'").replace("\\'", "'");
-
-            body = body.replace("^\\^\"", "\"")
-                    .replace("\\^\"", "\"")
-                    .replace("^\"", "\"")
-                    .replace("\\\"", "\"");
-
-            body = body.replace("^{", "{")
-                    .replace("^}", "}")
-                    .replace("^[", "[")
-                    .replace("^]", "]");
-
-            body = body.replace("^", "");
+            body = cleanBody(bodyMatcher.group(2));
         }
         return JsonFormatter.formatJson(body);
     }
 
+    private static String cleanBody(String body) {
+        body = body.replace("'\\''", "'").replace("\\'", "'");
+
+        body = body.replace("^\\^\"", "\"")
+                .replace("\\^\"", "\"")
+                .replace("^\"", "\"")
+                .replace("\\\"", "\"");
+
+        body = body.replace("^{", "{")
+                .replace("^}", "}")
+                .replace("^[", "[")
+                .replace("^]", "]");
+
+        body = body.replace("^", "");
+
+        return body;
+    }
 }
 
