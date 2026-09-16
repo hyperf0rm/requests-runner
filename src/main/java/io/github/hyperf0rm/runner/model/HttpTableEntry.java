@@ -3,7 +3,7 @@ package io.github.hyperf0rm.runner.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Header {
+public class HttpTableEntry {
 
     private StringProperty key;
     public String getKey() { return keyProperty().get(); }
@@ -25,7 +25,7 @@ public class Header {
         return value;
     }
 
-    public Header(String key, String value) {
+    public HttpTableEntry(String key, String value) {
         setKey(key);
         setValue(value);
     }

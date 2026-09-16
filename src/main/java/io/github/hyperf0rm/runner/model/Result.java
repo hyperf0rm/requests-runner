@@ -7,8 +7,8 @@ public class Result {
     private long duration;
     private String url;
     private String payload;
-    private List<Header> headers;
-    private List<Header> responseHeaders;
+    private List<HttpTableEntry> headers;
+    private List<HttpTableEntry> responseHeaders;
     private int statusCode;
     private String response;
     private String error;
@@ -47,11 +47,11 @@ public class Result {
         this.payload = payload;
     }
 
-    public List<Header> getHeaders() {
+    public List<HttpTableEntry> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(List<Header> headers) {
+    public void setHeaders(List<HttpTableEntry> headers) {
         this.headers = headers;
     }
 
@@ -79,11 +79,11 @@ public class Result {
         this.error = error;
     }
 
-    public List<Header> getResponseHeaders() {
+    public List<HttpTableEntry> getResponseHeaders() {
         return responseHeaders;
     }
 
-    public void setResponseHeaders(List<Header> responseHeaders) {
+    public void setResponseHeaders(List<HttpTableEntry> responseHeaders) {
         this.responseHeaders = responseHeaders;
     }
 }

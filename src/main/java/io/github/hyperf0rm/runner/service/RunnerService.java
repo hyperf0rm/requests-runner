@@ -1,6 +1,6 @@
 package io.github.hyperf0rm.runner.service;
 
-import io.github.hyperf0rm.runner.model.Header;
+import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.tool.JsonFormatter;
@@ -43,13 +43,13 @@ public class RunnerService {
                 result.setStatusCode(response.statusCode());
                 result.setResponse(JsonFormatter.formatJson(response.body()));
                 Map<String, List<String>> headers = response.headers().map();
-                List<Header> processedHeaders = new ArrayList<>();
+                List<HttpTableEntry> processedHeaders = new ArrayList<>();
                 for (Map.Entry<String, List<String>> header : headers.entrySet()) {
                     if (header.getKey().startsWith(":")) {
                         continue;
                     }
                     String value = String.join(", ", header.getValue());
-                    processedHeaders.add(new Header(header.getKey(), value));
+                    processedHeaders.add(new HttpTableEntry(header.getKey(), value));
                 }
                 result.setResponseHeaders(processedHeaders);
             } catch (InterruptedException e) {
@@ -99,7 +99,7 @@ public class RunnerService {
             HttpRequest.Builder builder = HttpRequest.newBuilder()
                     .uri(new URI(request.url()))
                     .method(request.method().name(), bodyPublisher);
-            List<Header> headers = request.headers();
+            List<HttpTableEntry> headers = request.headers();
             headers.forEach(h -> builder.header(h.getKey(), h.getValue()));
 
             return builder.build();

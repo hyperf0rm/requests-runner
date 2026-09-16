@@ -1,13 +1,18 @@
 package io.github.hyperf0rm.runner.controller;
 
+import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.service.RunnerService;
+import io.github.hyperf0rm.runner.tool.UrlCodec;
+import io.github.hyperf0rm.runner.ui.runner.HttpEntryTableView;
 import io.github.hyperf0rm.runner.ui.runner.MainRunnerView;
+import io.github.hyperf0rm.runner.ui.runner.TopBar;
 import io.github.hyperf0rm.runner.util.TemplateEngine;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainController {
@@ -15,6 +20,8 @@ public class MainController {
     private final RunnerService runnerService = new RunnerService();
     private final MainRunnerView view;
     private Task<List<Result>> runTask;
+    private final UrlCodec urlCodec = new UrlCodec();
+    private boolean isUrlUpdating = false;
 
     public MainController(MainRunnerView view) {
         this.view = view;
@@ -88,5 +95,76 @@ public class MainController {
 
     public void cancel() {
         runTask.cancel(true);
+    }
+
+    public void initParamBindings() {
+        TopBar topBar = view.getTopBar();
+        HttpEntryTableView paramsTable = view.getRequestTabsPane().getParamsTable();
+
+        topBar.getUrlTextField().textProperty().addListener((observable, oldValue, newValue) -> {
+            if (isUrlUpdating) {
+                return;
+            }
+            isUrlUpdating = true;
+
+            try {
+                paramsTable.setEntries(extractParamsFromUrl(newValue));
+            } finally {
+                isUrlUpdating = false;
+            }
+        });
+
+        paramsTable.setOnParamsChanged(params -> {
+            if (isUrlUpdating) {
+                return;
+            }
+            isUrlUpdating = true;
+
+            try {
+                updateUrlWithParams(topBar, params);
+            } finally {
+                isUrlUpdating = false;
+            }
+        });
+    }
+
+    private List<HttpTableEntry> extractParamsFromUrl(String url) {
+        List<HttpTableEntry> entries = new ArrayList<>();
+        if (!url.contains("?")) {
+            return entries;
+        }
+
+        int queryIndex = url.indexOf("?");
+        if (queryIndex == url.length() - 1) {
+            return entries;
+        }
+
+        String queryString = url.substring(queryIndex + 1);
+        String[] params = queryString.split("&");
+        for (String param : params) {
+            if (param.isBlank()) continue;
+            String[] parts = param.split("=", 2);
+            String key = urlCodec.decode(parts[0]);
+            String value = parts.length > 1 ? urlCodec.decode(parts[1]) : "";
+            entries.add(new HttpTableEntry(key, value));
+        }
+        return entries;
+    }
+
+    private void updateUrlWithParams(TopBar topBar, List<HttpTableEntry> params) {
+        String currentUrl = topBar.getUrl();
+        String baseUrl = currentUrl.contains("?") ? currentUrl.substring(0, currentUrl.indexOf("?")) : currentUrl;
+
+        if (params.isEmpty()) {
+            topBar.setUrl(baseUrl);
+            return;
+        }
+        List<String> queryParams = new ArrayList<>();
+        for (HttpTableEntry param : params) {
+            queryParams.add(urlCodec.encode(param.getKey()) + "=" + urlCodec.encode(param.getValue()));
+        }
+
+        String query = String.join("&", queryParams);
+        topBar.setUrl(baseUrl + "?" + query);
     }
 }

@@ -33,6 +33,8 @@ public class MainRunnerView extends BorderPane {
         setTop(topBar);
         setCenter(splitPane);
         setMargin(splitPane, new Insets(10));
+
+        controller.initParamBindings();
     }
 
     public MainRunnerView duplicate() {

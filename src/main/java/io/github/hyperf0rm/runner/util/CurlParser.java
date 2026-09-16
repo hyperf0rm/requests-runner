@@ -1,6 +1,6 @@
 package io.github.hyperf0rm.runner.util;
 
-import io.github.hyperf0rm.runner.model.Header;
+import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.HttpMethod;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.tool.JsonFormatter;
@@ -37,7 +37,7 @@ public class CurlParser {
     public static Request parse(String curl) {
         HttpMethod httpMethod = getHttpMethod(curl);
         String url = getUrl(curl);
-        List<Header> headers = getHeaders(curl);
+        List<HttpTableEntry> headers = getHeaders(curl);
         String body = getBody(curl, headers);
         return new Request(httpMethod, url, headers, body);
     }
@@ -66,18 +66,18 @@ public class CurlParser {
         return url;
     }
 
-    private static List<Header> getHeaders(String curl) {
+    private static List<HttpTableEntry> getHeaders(String curl) {
         Matcher headersMatcher = HEADER_PATTERN.matcher(curl);
-        List<Header> headers = new ArrayList<>();
+        List<HttpTableEntry> headers = new ArrayList<>();
         while (headersMatcher.find()) {
             String header = headersMatcher.group(1);
             String[] parts = header.split(":\\s*", 2);
-            headers.add(new Header(parts[0], parts[1]));
+            headers.add(new HttpTableEntry(parts[0], parts[1]));
         }
         return headers;
     }
 
-    private static String getBody(String curl, List<Header> headers) {
+    private static String getBody(String curl, List<HttpTableEntry> headers) {
         boolean hasFormHeader = headers.stream()
                 .anyMatch(h -> h.getValue().toLowerCase().contains("application/x-www-form-urlencoded"));
         boolean isUrlEncoded = hasFormHeader || curl.contains("--data-urlencode");

@@ -1,6 +1,6 @@
 package io.github.hyperf0rm.runner.ui.runner;
 
-import io.github.hyperf0rm.runner.model.Header;
+import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.Result;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -109,8 +109,8 @@ public class ExecutionPanel extends VBox {
         );
     }
 
-    private Tab createHeadersTab(String label, List<Header> headers) {
-        HeadersTableView headerTable = new HeadersTableView(false, headers);
+    private Tab createHeadersTab(String label, List<HttpTableEntry> headers) {
+        HttpEntryTableView headerTable = new HttpEntryTableView(false, headers, HttpEntryTableView.Type.HEADER);
         Tab headersTab = new Tab(label, headerTable);
         headersTab.setClosable(false);
         return headersTab;

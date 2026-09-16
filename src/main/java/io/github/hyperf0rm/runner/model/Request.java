@@ -5,6 +5,6 @@ import java.util.List;
 public record Request(
         HttpMethod method,
         String url,
-        List<Header> headers,
+        List<HttpTableEntry> headers,
         String body
 ) {}
