@@ -131,10 +131,9 @@ public class ExecutionPanel extends VBox {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         delayTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty()) {
                 removeDelayError();
-            }
         });
+        delayTextField.setPromptText("default: 0");
 
         HBox mainHBox = new HBox();
         mainHBox.setAlignment(Pos.BASELINE_LEFT);

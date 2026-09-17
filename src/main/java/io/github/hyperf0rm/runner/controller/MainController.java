@@ -33,12 +33,14 @@ public class MainController {
         String url = view.getTopBar().getUrl();
         long delay = 0L;
 
-        try {
-            delay = Long.parseLong(view.getExecutionPanel().getDelay());
-            if (delay < 0) throw new IllegalArgumentException();
-        } catch (Exception e) {
-            view.getExecutionPanel().setDelayError();
-            errors++;
+        if (!view.getExecutionPanel().getDelay().isBlank()) {
+            try {
+                delay = Long.parseLong(view.getExecutionPanel().getDelay());
+                if (delay < 0) throw new IllegalArgumentException();
+            } catch (Exception e) {
+                view.getExecutionPanel().setDelayError();
+                errors++;
+            }
         }
 
         if (url == null || url.isBlank()) {
