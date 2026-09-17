@@ -19,7 +19,8 @@ public class Main extends Application {
         stage.show();
     }
 
-    static void main() {
-        launch();
+    public static void main(String[] args) {
+        System.setProperty("jdk.httpclient.allowRestrictedHeaders", "expect,host,connection,content-length,upgrade");
+        launch(args);
     }
 }
