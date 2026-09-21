@@ -30,21 +30,21 @@ public class MainController {
     public void sendRequests() {
         int errors = 0;
 
-        String url = view.getTopBar().getUrl();
+        String url = view.getUrl();
         long delay = 0L;
 
-        if (!view.getExecutionPanel().getDelay().isBlank()) {
+        if (!view.getDelay().isBlank()) {
             try {
-                delay = Long.parseLong(view.getExecutionPanel().getDelay());
+                delay = Long.parseLong(view.getDelay());
                 if (delay < 0) throw new IllegalArgumentException();
             } catch (Exception e) {
-                view.getExecutionPanel().setDelayError();
+                view.setDelayError();
                 errors++;
             }
         }
 
         if (url == null || url.isBlank()) {
-            view.getTopBar().setUrlError();
+            view.setUrlError();
             errors++;
         }
 
@@ -53,41 +53,32 @@ public class MainController {
         final long finalDelay = delay;
         String normalizedUrl = runnerService.normalizeUrl(url);
 
-        Request request = new Request(
-                view.getTopBar().getMethod(),
-                normalizedUrl,
-                view.getRequestTabsPane().getHeaders(),
-                view.getRequestTabsPane().getBody()
-        );
-        List<String> values = view.getExecutionPanel().getValues();
+        Request request = view.buildRequest(normalizedUrl);
+        List<String> values = view.getValuesForTemplate();
         List<Request> requests = TemplateEngine.fillWithValues(request, values);
 
-        view.getExecutionPanel().clearResults();
-        view.getTopBar().getSendButton().setDisable(true);
-        view.getTopBar().getCancelButton().setDisable(false);
+        view.clearResults();
+        view.setRunningStatus(true);
 
         runTask = new Task<>() {
             @Override
             protected List<Result> call() {
                 return runnerService.run(requests, finalDelay, result -> {
                     Platform.runLater(() -> {
-                        view.getExecutionPanel().addSingleResult(result);
+                        view.addResult(result);
                     });
                 });
             }
         };
 
         runTask.setOnCancelled(event -> {
-            view.getTopBar().getSendButton().setDisable(false);
-            view.getTopBar().getCancelButton().setDisable(true);
+            view.setRunningStatus(false);
         });
         runTask.setOnSucceeded(event -> {
-            view.getTopBar().getSendButton().setDisable(false);
-            view.getTopBar().getCancelButton().setDisable(true);
+            view.setRunningStatus(false);
         });
         runTask.setOnFailed(event -> {
-            view.getTopBar().getSendButton().setDisable(false);
-            view.getTopBar().getCancelButton().setDisable(true);
+            view.setRunningStatus(false);
         });
 
         Thread thread = new Thread(runTask);
@@ -101,7 +92,7 @@ public class MainController {
 
     public void initParamBindings() {
         TopBar topBar = view.getTopBar();
-        HttpEntryTableView paramsTable = view.getRequestTabsPane().getParamsTable();
+        HttpEntryTableView paramsTable = view.getParamsTable();
 
         topBar.getUrlTextField().textProperty().addListener((observable, oldValue, newValue) -> {
             if (isUrlUpdating) {

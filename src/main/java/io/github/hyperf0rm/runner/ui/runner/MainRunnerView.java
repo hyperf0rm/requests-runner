@@ -2,11 +2,14 @@ package io.github.hyperf0rm.runner.ui.runner;
 
 import io.github.hyperf0rm.runner.controller.MainController;
 import io.github.hyperf0rm.runner.model.Request;
+import io.github.hyperf0rm.runner.model.Result;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 
 public class MainRunnerView extends BorderPane {
@@ -53,8 +56,50 @@ public class MainRunnerView extends BorderPane {
         requestTabsPane.setHeaders(request.headers());
     }
 
-    public ExecutionPanel getExecutionPanel() {
-        return this.executionPanel;
+    public Request buildRequest(String normalizedUrl) {
+        return new Request(
+                topBar.getMethod(),
+                normalizedUrl,
+                requestTabsPane.getHeaders(),
+                requestTabsPane.getBody()
+        );
+    }
+
+    public void setRunningStatus(boolean running) {
+        topBar.getSendButton().setDisable(running);
+        topBar.getCancelButton().setDisable(!running);
+    }
+
+    public void addResult(Result result) {
+        executionPanel.addSingleResult(result);
+    }
+
+    public void clearResults() {
+        executionPanel.clearResults();
+    }
+
+    public List<String> getValuesForTemplate() {
+        return executionPanel.getValues();
+    }
+
+    public String getUrl() {
+        return topBar.getUrl();
+    }
+
+    public String getDelay() {
+        return executionPanel.getDelay();
+    }
+
+    public void setDelayError() {
+        executionPanel.setDelayError();
+    }
+
+    public void setUrlError() {
+        topBar.setUrlError();
+    }
+
+    public HttpEntryTableView getParamsTable() {
+        return requestTabsPane.getParamsTable();
     }
 
     public TopBar getTopBar() {
