@@ -1,5 +1,7 @@
 package io.github.hyperf0rm.runner.ui.runner;
 
+import io.github.hyperf0rm.runner.model.Request;
+import io.github.hyperf0rm.runner.repository.RequestHistoryRepository;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -7,8 +9,11 @@ import javafx.scene.control.*;
 public class RunnerTabPane extends TabPane {
 
     private final Tab buttonTab = new Tab();
+    private final RequestHistoryRepository repository;
 
-    public RunnerTabPane() {
+    public RunnerTabPane(RequestHistoryRepository repository) {
+        this.repository = repository;
+
         Tab tab = createRequestTab();
         buttonTab.getStyleClass().add("new-tab-button");
         buttonTab.setClosable(false);
@@ -29,8 +34,24 @@ public class RunnerTabPane extends TabPane {
         this.getTabs().addAll(tab, buttonTab);
     }
 
+    public void openRequestInNewTab(Request request) {
+        for (Tab tab : this.getTabs()) {
+            if (tab.getContent() instanceof MainRunnerView view) {
+                if (request.equals(view.getCurrentRequest())) {
+                    this.getSelectionModel().select(tab);
+                    return;
+                }
+            }
+        }
+
+        MainRunnerView view = new MainRunnerView(request, repository);
+        Tab newTab = createRequestTab(view);
+        this.getTabs().add(this.getTabs().size() - 1, newTab);
+        this.getSelectionModel().select(newTab);
+    }
+
     private Tab createRequestTab() {
-        return createRequestTab(new MainRunnerView());
+        return createRequestTab(new MainRunnerView(repository));
     }
 
     private Tab createRequestTab(MainRunnerView view) {

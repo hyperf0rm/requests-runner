@@ -1,8 +1,11 @@
 package io.github.hyperf0rm.runner.ui.runner;
 
 import io.github.hyperf0rm.runner.controller.MainController;
+import io.github.hyperf0rm.runner.model.HttpMethod;
+import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
+import io.github.hyperf0rm.runner.repository.RequestHistoryRepository;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.SplitPane;
@@ -18,9 +21,12 @@ public class MainRunnerView extends BorderPane {
     private final RequestTabsPane requestTabsPane = new RequestTabsPane();
     private final ExecutionPanel executionPanel = new ExecutionPanel();
     private final CurlImportWindow curlImportWindow = new CurlImportWindow();
-    private final MainController controller = new MainController(this);
+    private final MainController controller;
+    private final RequestHistoryRepository repository;
 
-    public MainRunnerView() {
+    public MainRunnerView(RequestHistoryRepository repository) {
+        this.repository = repository;
+        this.controller = new MainController(this, repository);
         this.topBar.getSendButton().setOnAction(event -> controller.sendRequests());
         this.topBar.getImportCURLButton().setOnAction(event -> {
             Stage stage = (Stage) this.getScene().getWindow();
@@ -29,6 +35,7 @@ public class MainRunnerView extends BorderPane {
         this.topBar.getCancelButton().setOnAction(event -> controller.cancel());
 
         SplitPane splitPane = new SplitPane(requestTabsPane, executionPanel);
+        requestTabsPane.setPadding(new Insets(0, 10, 0, 0));
         Platform.runLater(() -> {
             splitPane.setDividerPositions(0.65);
         });
@@ -40,12 +47,20 @@ public class MainRunnerView extends BorderPane {
         controller.initParamBindings();
     }
 
+    public MainRunnerView(Request request, RequestHistoryRepository historyRepository) {
+        this(historyRepository);
+        this.setMethod(request.method());
+        this.setUrl(request.url());
+        this.setHeaders(request.headers());
+        this.setBody(request.body());
+    }
+
     public MainRunnerView duplicate() {
-        MainRunnerView duplicate = new MainRunnerView();
-        duplicate.getTopBar().getMethodChoiceBox().setValue(this.getTopBar().getMethod());
-        duplicate.getTopBar().getUrlTextField().setText(this.getTopBar().getUrl());
-        duplicate.getRequestTabsPane().setBody(this.getRequestTabsPane().getBody());
-        duplicate.getRequestTabsPane().setHeaders(this.getRequestTabsPane().getHeaders());
+        MainRunnerView duplicate = new MainRunnerView(this.repository);
+        duplicate.setMethod(this.getTopBar().getMethod());
+        duplicate.setUrl(this.getTopBar().getUrl());
+        duplicate.setBody(this.getRequestTabsPane().getBody());
+        duplicate.setHeaders(this.getRequestTabsPane().getHeaders());
         return duplicate;
     }
 
@@ -63,6 +78,10 @@ public class MainRunnerView extends BorderPane {
                 requestTabsPane.getHeaders(),
                 requestTabsPane.getBody()
         );
+    }
+
+    public Request getCurrentRequest() {
+        return buildRequest(getUrl());
     }
 
     public void setRunningStatus(boolean running) {
@@ -84,6 +103,22 @@ public class MainRunnerView extends BorderPane {
 
     public String getUrl() {
         return topBar.getUrl();
+    }
+
+    public void setUrl(String url) {
+        topBar.setUrl(url);
+    }
+
+    public void setMethod(HttpMethod method) {
+        topBar.setMethod(method);
+    }
+
+    public void setHeaders(List<HttpTableEntry> headers) {
+        requestTabsPane.setHeaders(headers);
+    }
+
+    public void setBody(String body) {
+        requestTabsPane.setBody(body);
     }
 
     public String getDelay() {

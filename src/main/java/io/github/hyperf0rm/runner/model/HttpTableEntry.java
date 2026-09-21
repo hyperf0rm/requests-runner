@@ -3,6 +3,8 @@ package io.github.hyperf0rm.runner.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.util.Objects;
+
 public class HttpTableEntry {
 
     private StringProperty key;
@@ -28,5 +30,17 @@ public class HttpTableEntry {
     public HttpTableEntry(String key, String value) {
         setKey(key);
         setValue(value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj instanceof HttpTableEntry that) {
+            return this.getKey().equals(that.getKey())
+                    && this.getValue().equals(that.getValue());
+        } else {
+            return false;
+        }
     }
 }

@@ -3,6 +3,7 @@ package io.github.hyperf0rm.runner.controller;
 import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
+import io.github.hyperf0rm.runner.repository.RequestHistoryRepository;
 import io.github.hyperf0rm.runner.service.RunnerService;
 import io.github.hyperf0rm.runner.tool.UrlCodec;
 import io.github.hyperf0rm.runner.ui.runner.HttpEntryTableView;
@@ -22,9 +23,11 @@ public class MainController {
     private Task<List<Result>> runTask;
     private final UrlCodec urlCodec = new UrlCodec();
     private boolean isUrlUpdating = false;
+    private final RequestHistoryRepository historyRepository;
 
-    public MainController(MainRunnerView view) {
+    public MainController(MainRunnerView view, RequestHistoryRepository historyRepository) {
         this.view = view;
+        this.historyRepository = historyRepository;
     }
 
     public void sendRequests() {
@@ -73,12 +76,15 @@ public class MainController {
 
         runTask.setOnCancelled(event -> {
             view.setRunningStatus(false);
+            historyRepository.addRequest(request);
         });
         runTask.setOnSucceeded(event -> {
             view.setRunningStatus(false);
+            historyRepository.addRequest(request);
         });
         runTask.setOnFailed(event -> {
             view.setRunningStatus(false);
+            historyRepository.addRequest(request);
         });
 
         Thread thread = new Thread(runTask);

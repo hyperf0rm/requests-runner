@@ -7,4 +7,10 @@ public record Request(
         String url,
         List<HttpTableEntry> headers,
         String body
-) {}
+) {
+
+    @Override
+    public String toString() {
+        return url;
+    }
+}
