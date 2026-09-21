@@ -24,9 +24,8 @@ public class RunnerService {
         this.client =  HttpClient.newHttpClient();
     }
 
-    public List<Result> run(List<Request> requests, long delay, Consumer<Result> onResult) {
+    public void run(List<Request> requests, long delay, Consumer<Result> onResult) {
 
-        List<Result> results = new ArrayList<>();
         int id = 1;
 
         for (Request request : requests) {
@@ -65,8 +64,6 @@ public class RunnerService {
                 result.setRequest(request);
             }
 
-            results.add(result);
-
             if (onResult != null) {
                 onResult.accept(result);
             }
@@ -81,7 +78,6 @@ public class RunnerService {
             }
             id++;
         }
-        return results;
     }
 
     private HttpRequest buildFinalRequest(Request request) {

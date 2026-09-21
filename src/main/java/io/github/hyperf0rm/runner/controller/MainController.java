@@ -2,7 +2,6 @@ package io.github.hyperf0rm.runner.controller;
 
 import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.Request;
-import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.repository.RequestHistoryRepository;
 import io.github.hyperf0rm.runner.service.RunnerService;
 import io.github.hyperf0rm.runner.tool.UrlCodec;
@@ -20,7 +19,7 @@ public class MainController {
 
     private final RunnerService runnerService = new RunnerService();
     private final MainRunnerView view;
-    private Task<List<Result>> runTask;
+    private Task<Void> runTask;
     private final UrlCodec urlCodec = new UrlCodec();
     private boolean isUrlUpdating = false;
     private final RequestHistoryRepository historyRepository;
@@ -65,12 +64,13 @@ public class MainController {
 
         runTask = new Task<>() {
             @Override
-            protected List<Result> call() {
-                return runnerService.run(requests, finalDelay, result -> {
+            protected Void call() {
+                runnerService.run(requests, finalDelay, result -> {
                     Platform.runLater(() -> {
                         view.addResult(result);
                     });
                 });
+                return null;
             }
         };
 
