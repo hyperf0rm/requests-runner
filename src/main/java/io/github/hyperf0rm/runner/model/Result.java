@@ -5,9 +5,7 @@ import java.util.List;
 public class Result {
     private int id;
     private long duration;
-    private String url;
-    private String payload;
-    private List<HttpTableEntry> headers;
+    private Request request;
     private List<HttpTableEntry> responseHeaders;
     private int statusCode;
     private String response;
@@ -31,28 +29,24 @@ public class Result {
         this.duration = duration;
     }
 
-    public String getUrl() {
-        return url;
+    public Request getRequest() {
+        return request;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setRequest(Request request) {
+        this.request = request;
+    }
+
+    public String getUrl() {
+        return request.url();
     }
 
     public String getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String payload) {
-        this.payload = payload;
+        return request.body();
     }
 
     public List<HttpTableEntry> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(List<HttpTableEntry> headers) {
-        this.headers = headers;
+        return request.headers();
     }
 
     public int getStatusCode() {
