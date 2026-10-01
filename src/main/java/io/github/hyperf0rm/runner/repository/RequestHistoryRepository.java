@@ -10,6 +10,7 @@ import java.util.List;
 public class RequestHistoryRepository {
 
     private final ObservableList<Request> history = FXCollections.observableArrayList();
+    private static final int MAX_HISTORY_SIZE = 50;
 
     public RequestHistoryRepository() {
         List<Request> savedRequests = AppDataManager.get().requests();
@@ -22,7 +23,12 @@ public class RequestHistoryRepository {
         return history;
     }
     public void addRequest(Request request) {
+        history.remove(request);
         history.addFirst(request);
+
+        while (history.size() > MAX_HISTORY_SIZE) {
+            history.removeLast();
+        }
         AppDataManager.saveRequests(history);
     }
 }
