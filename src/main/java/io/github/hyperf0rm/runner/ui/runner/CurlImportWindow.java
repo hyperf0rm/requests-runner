@@ -22,6 +22,7 @@ public class CurlImportWindow {
         popupStage.setTitle("Import cURL");
 
         TextArea textArea = new TextArea();
+        textArea.setWrapText(true);
         Button importButton = new Button("Import");
         importButton.setOnAction(event -> {
             String text = textArea.getText();
