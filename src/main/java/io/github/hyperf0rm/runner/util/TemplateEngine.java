@@ -32,18 +32,23 @@ public class TemplateEngine {
     }
 
     public static List<Request> fillWithValues (Request request, List<String> values) {
-        boolean hasPlaceholders = hasPlaceholders(request.body());
 
-        if (values == null || values.isEmpty() || !hasPlaceholders) {
+        boolean hasBodyPlaceholders = hasPlaceholders(request.body());
+        boolean hasUrlPlaceholders = hasPlaceholders(request.url());
+
+        boolean hasAnyPlaceholders = hasUrlPlaceholders || hasBodyPlaceholders;
+
+        if (values == null || values.isEmpty() || !hasAnyPlaceholders) {
             return List.of(request);
         }
 
         List<Request> requests = new ArrayList<>();
 
         for (String value : values) {
+            String filledUrl = interpolate(request.url(), value);
             String filledBody = interpolate(request.body(), value);
             Request newRequest = new Request(
-                    request.method(), request.url(), request.headers(), filledBody
+                    request.method(), filledUrl, request.headers(), filledBody
             );
             requests.add(newRequest);
         }
