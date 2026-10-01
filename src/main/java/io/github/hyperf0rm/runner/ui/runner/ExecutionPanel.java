@@ -3,6 +3,7 @@ package io.github.hyperf0rm.runner.ui.runner;
 import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.Result;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -21,23 +22,30 @@ public class ExecutionPanel extends VBox {
 
     public ExecutionPanel(double spacing) {
         super(spacing);
-        this.valuesTextArea.setPrefHeight(150);
-        this.valuesTextArea.setMinHeight(Region.USE_PREF_SIZE);
-        HBox mainHBox = createExecutionHbox();
-        this.getChildren().addAll(mainHBox, this.valuesTextArea);
         this.setPadding(new Insets(10));
-        VBox.setVgrow(this.valuesTextArea, Priority.NEVER);
+
+        HBox mainHBox = createExecutionHbox();
+        VBox inputSection = new VBox(spacing, mainHBox, valuesTextArea);
+        VBox.setVgrow(valuesTextArea, Priority.ALWAYS);
+        valuesTextArea.setWrapText(true);
+        inputSection.setMinHeight(80);
 
         VBox resultsContainer = new VBox(spacing);
         resultsContainer.getChildren().add(this.resultsAccordion);
         ScrollPane resultsScrollPane = new ScrollPane(resultsContainer);
-
         resultsScrollPane.setFitToWidth(true);
         resultsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         resultsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        resultsScrollPane.setPadding(new Insets(8, 0, 0, 0));
+        resultsScrollPane.setMinHeight(100);
 
-        this.getChildren().add(resultsScrollPane);
-        VBox.setVgrow(resultsScrollPane, Priority.ALWAYS);
+        SplitPane splitPane = new SplitPane();
+        splitPane.setOrientation(Orientation.VERTICAL);
+        splitPane.setDividerPositions(0.3);
+        splitPane.getItems().addAll(inputSection, resultsScrollPane);
+
+        this.getChildren().add(splitPane);
+        VBox.setVgrow(splitPane, Priority.ALWAYS);
     }
 
     public ExecutionPanel() {

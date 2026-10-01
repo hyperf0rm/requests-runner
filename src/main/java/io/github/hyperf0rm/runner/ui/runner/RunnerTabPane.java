@@ -30,7 +30,7 @@ public class RunnerTabPane extends TabPane {
         buttonTab.setOnSelectionChanged(event -> {
             this.getSelectionModel().selectPrevious();
         });
-        this.setTabMaxWidth(200);
+        this.setTabMaxWidth(300);
         this.getTabs().addAll(tab, buttonTab);
     }
 
