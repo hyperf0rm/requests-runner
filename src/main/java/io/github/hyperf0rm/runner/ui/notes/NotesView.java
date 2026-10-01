@@ -6,6 +6,7 @@ import io.github.hyperf0rm.runner.model.Note;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.repository.NoteRepository;
 import io.github.hyperf0rm.runner.repository.RequestHistoryRepository;
+import javafx.animation.PauseTransition;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
@@ -13,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.StyleClassedTextArea;
 
@@ -28,6 +30,7 @@ public class NotesView extends GridPane {
     private final HBox searchBar = createSearchBar();
     private final Button searchButton = new Button("Search");
     private final NoteRepository noteRepository = new NoteRepository();
+    private final PauseTransition autoSaveTimer = new PauseTransition(Duration.millis(2000));
 
 
     public NotesView() {
@@ -36,6 +39,7 @@ public class NotesView extends GridPane {
         VBox leftContainer = createListView();
         this.add(leftContainer, 0, 0);
         this.add(rightContainer, 1, 0);
+        autoSaveTimer.setOnFinished(event -> AppDataManager.saveNotes(noteRepository.getNotes()));
         initListeners();
         initSearchEventHandlers();
     }
@@ -53,13 +57,13 @@ public class NotesView extends GridPane {
             Note note = listView.getSelectionModel().getSelectedItem();
             note.setTitle(newValue);
             listView.refresh();
-            AppDataManager.saveNotes(noteRepository.getNotes());
+            autoSaveTimer.playFromStart();
         });
 
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
             Note note = listView.getSelectionModel().getSelectedItem();
             note.setText(newValue);
-            AppDataManager.saveNotes(noteRepository.getNotes());
+            autoSaveTimer.playFromStart();
         });
     }
 
