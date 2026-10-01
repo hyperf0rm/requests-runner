@@ -1,7 +1,13 @@
 package io.github.hyperf0rm.runner.ui.notes;
 
 import io.github.hyperf0rm.runner.controller.SearchController;
+import io.github.hyperf0rm.runner.data.AppDataManager;
 import io.github.hyperf0rm.runner.model.Note;
+import io.github.hyperf0rm.runner.model.Request;
+import io.github.hyperf0rm.runner.repository.NoteRepository;
+import io.github.hyperf0rm.runner.repository.RequestHistoryRepository;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -21,6 +27,7 @@ public class NotesView extends GridPane {
     private final TextField searchField = new TextField();
     private final HBox searchBar = createSearchBar();
     private final Button searchButton = new Button("Search");
+    private final NoteRepository noteRepository = new NoteRepository();
 
 
     public NotesView() {
@@ -46,11 +53,13 @@ public class NotesView extends GridPane {
             Note note = listView.getSelectionModel().getSelectedItem();
             note.setTitle(newValue);
             listView.refresh();
+            AppDataManager.saveNotes(noteRepository.getNotes());
         });
 
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
             Note note = listView.getSelectionModel().getSelectedItem();
             note.setText(newValue);
+            AppDataManager.saveNotes(noteRepository.getNotes());
         });
     }
 
@@ -130,7 +139,7 @@ public class NotesView extends GridPane {
         buttonHBox.setSpacing(10);
         Button addButton = new Button("Add");
         addButton.setOnAction(event -> {
-            listView.getItems().add(new Note("Note", ""));
+            noteRepository.addNote(new Note("Note", ""));
             listView.getSelectionModel().selectLast();
         });
 
@@ -138,7 +147,7 @@ public class NotesView extends GridPane {
         deleteButton.setOnAction(event -> {
             Note selectedNote = listView.getSelectionModel().getSelectedItem();
             if (selectedNote != null) {
-                listView.getItems().remove(selectedNote);
+                noteRepository.deleteNote(selectedNote);
                 if (listView.getItems().isEmpty()) {
                     titleField.setVisible(false);
                     textArea.setVisible(false);
@@ -146,6 +155,9 @@ public class NotesView extends GridPane {
                 }
             }
         });
+
+        listView.setItems(noteRepository.getNotes());
+
         buttonHBox.getChildren().addAll(addButton, deleteButton);
         container.getChildren().addAll(listView, buttonHBox);
         return container;

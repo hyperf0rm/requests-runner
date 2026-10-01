@@ -7,6 +7,13 @@ import java.util.Objects;
 
 public class HttpTableEntry {
 
+    public HttpTableEntry(String key, String value) {
+        setKey(key);
+        setValue(value);
+    }
+
+    public HttpTableEntry() {}
+
     private StringProperty key;
     public String getKey() { return keyProperty().get(); }
     public void setKey(String key) { keyProperty().set(key); }
@@ -25,11 +32,6 @@ public class HttpTableEntry {
             value = new SimpleStringProperty(this, "value");
         }
         return value;
-    }
-
-    public HttpTableEntry(String key, String value) {
-        setKey(key);
-        setValue(value);
     }
 
     @Override
