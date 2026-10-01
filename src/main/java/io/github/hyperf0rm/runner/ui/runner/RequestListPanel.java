@@ -2,6 +2,7 @@ package io.github.hyperf0rm.runner.ui.runner;
 
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.repository.RequestHistoryRepository;
+import javafx.application.Platform;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -52,6 +53,7 @@ public class RequestListPanel extends VBox {
         listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null){
                 onRequestSelected.accept(newValue);
+                Platform.runLater(() -> listView.getSelectionModel().clearSelection());
             }
         });
     }
