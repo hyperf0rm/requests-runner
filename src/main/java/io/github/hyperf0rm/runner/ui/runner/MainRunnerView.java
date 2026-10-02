@@ -6,9 +6,12 @@ import io.github.hyperf0rm.runner.model.HttpTableEntry;
 import io.github.hyperf0rm.runner.model.Request;
 import io.github.hyperf0rm.runner.model.Result;
 import io.github.hyperf0rm.runner.repository.RequestHistoryRepository;
+import io.github.hyperf0rm.runner.util.CurlGenerator;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.SplitPane;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -23,6 +26,7 @@ public class MainRunnerView extends BorderPane {
     private final CurlImportWindow curlImportWindow = new CurlImportWindow();
     private final MainController controller;
     private final RequestHistoryRepository repository;
+    private final Clipboard clipboard = Clipboard.getSystemClipboard();
 
     public MainRunnerView(RequestHistoryRepository repository) {
         this.repository = repository;
@@ -32,6 +36,12 @@ public class MainRunnerView extends BorderPane {
             Stage stage = (Stage) this.getScene().getWindow();
             curlImportWindow.show(stage, this::applyParsedRequestToUI);
         });
+        this.topBar.getCopyCURLButton().setOnAction(event -> {
+            ClipboardContent content = new ClipboardContent();
+            content.putString(CurlGenerator.generateCurl(getCurrentRequest()));
+            clipboard.setContent(content);
+        });
+
         this.topBar.getCancelButton().setOnAction(event -> controller.cancel());
 
         SplitPane splitPane = new SplitPane(requestTabsPane, executionPanel);
