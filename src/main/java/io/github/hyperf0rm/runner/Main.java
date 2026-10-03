@@ -9,15 +9,22 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private MainTabPane ui;
+
     public void start(Stage stage) {
         Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
-        Scene scene = new Scene(new MainTabPane());
+        ui = new MainTabPane();
+        Scene scene = new Scene(ui);
         String cssPath = getClass().getResource("/style.css").toExternalForm();
         scene.getStylesheets().add(cssPath);
         stage.setTitle("Runner");
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
+    }
+
+    public void stop() {
+        ui.saveState();
     }
 
     public static void main(String[] args) {

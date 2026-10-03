@@ -8,9 +8,10 @@ import java.util.List;
 
 public record AppData(
         List<Request> requests,
-        List<Note> notes
+        List<Note> notes,
+        List<Request> requestTabs
 ) {
     public static AppData empty() {
-        return new AppData(new ArrayList<>(), new ArrayList<>());
+        return new AppData(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 }

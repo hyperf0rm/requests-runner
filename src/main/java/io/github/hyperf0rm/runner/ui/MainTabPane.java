@@ -21,4 +21,8 @@ public class MainTabPane extends TabPane {
         Tab notesTab = new Tab("Notes", noteListView);
         this.getTabs().addAll(runnerTab, toolsTab, notesTab);
     }
+
+    public void saveState() {
+        httpClientView.saveState();
+    }
 }

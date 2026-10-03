@@ -50,12 +50,17 @@ public class AppDataManager {
 
     public static void saveRequests(List<Request> requests) {
         List<Request> copy = new ArrayList<>(requests);
-        save(new AppData(copy, data.notes()));
+        save(new AppData(copy, data.notes(), data.requestTabs()));
     }
 
     public static void saveNotes(List<Note> notes) {
         List<Note> copy = new ArrayList<>(notes);
-        save(new AppData(data.requests(), copy));
+        save(new AppData(data.requests(), copy, data.requestTabs()));
+    }
+
+    public static void saveRequestTabs(List<Request> requestTabs) {
+        List<Request> copy = new ArrayList<>(requestTabs);
+        save(new AppData(data.requests(), data.notes(), copy));
     }
 
     private static Path resolvePath(String fileName) {
